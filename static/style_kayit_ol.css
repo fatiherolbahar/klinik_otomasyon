@@ -13,7 +13,7 @@ body {
     border-radius: 22px;
     box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
     text-align: center;
-    width: 420px;
+    width: 375px;
     position: relative;
     overflow: hidden;
 }
@@ -101,9 +101,35 @@ button:hover {
 .back-link:hover {
     text-decoration: underline;
 }
+@media (max-width: 700px) {
+    .container {
+        width: 98vw;
+        padding: 18px 2vw;
+        min-width: unset;
+        max-width: 99vw;
+    }
+    h2 {
+        font-size: 1.3rem;
+    }
+    button {
+        font-size: 1rem;
+        padding: 12px;
+    }
+    label, input {
+        font-size: 0.98rem;
+    }
+}
 @media (max-width: 500px) {
     .container {
         width: 98vw;
         padding: 16px 2vw;
+    }
+}
+@media (max-width: 400px) {
+    .container {
+        padding: 8px 1vw;
+    }
+    h2 {
+        font-size: 1.1rem;
     }
 }

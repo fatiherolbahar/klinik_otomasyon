@@ -13,7 +13,7 @@ body {
     border-radius: 28px;         /* köşe yuvarlaklığı artırıldı */
     box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18); /* shadow büyütüldü */
     text-align: center;
-    width: 300px;                /* genişlik artırıldı */
+    width: 350px;                /* genişlik artırıldı */
     position: relative;
     overflow: hidden;
 }
@@ -92,5 +92,32 @@ h2 {
     .container {
         width: 98vw;
         padding: 20px 2vw;
+        min-width: unset;
+        max-width: 99vw;
+    }
+    h2 {
+        font-size: 1.3rem;
+    }
+    .login-btn {
+        font-size: 1rem;
+        padding: 12px;
+    }
+    .footer {
+        font-size: 0.95rem;
+    }
+    .register-link {
+        font-size: 0.92rem;
+    }
+}
+@media (max-width: 400px) {
+    .container {
+        padding: 8px 1vw;
+    }
+    h2 {
+        font-size: 1.1rem;
+    }
+    .login-btn {
+        font-size: 0.95rem;
+        padding: 10px;
     }
 }

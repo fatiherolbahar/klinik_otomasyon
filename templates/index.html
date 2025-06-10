@@ -2,23 +2,23 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8" />
-    <title>Klinik Otomasyon Giriş</title>
+    <title>Diş Polikliniği</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style_index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h2>Klinik Otomasyon</h2>
+        <h2>Diş Polikliniği</h2>
         <form action="/admin" method="get">
-            <button class="login-btn" type="submit">Admin Girişi</button>
+            <button class="login-btn" type="submit">Doktor Girişi</button>
         </form>
         <form action="/kullanici" method="get">
-            <button class="login-btn" type="submit">Kullanıcı Girişi</button>
+            <button class="login-btn" type="submit">Hasta Girişi</button>
         </form>
         <a class="register-link" href="/kayit_ol">Kayıt Ol</a>
         <div class="footer">
-            © 2025 Klinik Otomasyon Sistemi
+            © 2025 Diş Polikliniği Randevu Sistemi
         </div>
     </div>
 </body>

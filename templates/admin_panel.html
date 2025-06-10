@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Doktor Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_admin_login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Doktor Paneli</h1>
+        <div style="margin-bottom: 30px; color: #357abd; font-weight: 600;">
+            Hoş geldiniz, {{ doktor_adi if doktor_adi else "Doktor" }}!
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+            <a href="/admin__randevular" class="panel-btn">Randevuları Görüntüle</a>
+            <a href="/hastalar" class="panel-btn">Hasta Listesi</a>
+            <a href="/profil" class="panel-btn">Profilim</a>
+            <a href="/logout" class="panel-btn" style="background: #e74c3c; color: #fff;">Çıkış Yap</a>
+        </div>
+    </div>
+    
+</body>
+</html>

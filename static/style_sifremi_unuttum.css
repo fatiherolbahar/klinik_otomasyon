@@ -18,7 +18,7 @@ body {
     border-radius: 22px;
     box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
     text-align: center;
-    width: 420px;
+    width: 400px;
     position: relative;
     overflow: hidden;
 }
@@ -43,9 +43,9 @@ body {
     z-index: 0;
 }
 
-h2 {
-    color: #2193b0;
+h1 {
     margin-bottom: 28px;
+    color: #2193b0;
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: 1px;
@@ -69,7 +69,7 @@ label {
     font-size: 1.05rem;
 }
 
-input, select, textarea {
+input {
     padding: 12px;
     border-radius: 10px;
     border: 1.5px solid #b2d8f7;
@@ -77,14 +77,9 @@ input, select, textarea {
     font-size: 1rem;
     transition: border 0.2s;
 }
-input:focus, select:focus, textarea:focus {
+input:focus {
     border: 1.5px solid #2193b0;
     outline: none;
-}
-
-textarea {
-    resize: vertical;
-    min-height: 60px;
 }
 
 button {
@@ -106,6 +101,16 @@ button:hover {
     transform: translateY(-2px) scale(1.03);
 }
 
+.flash-messages {
+    color: #e74c3c;
+    margin-bottom: 10px;
+    list-style-type: none;
+    padding: 0;
+    font-weight: 600;
+    z-index: 1;
+    position: relative;
+}
+
 .back-link {
     display: block;
     margin-top: 24px;
@@ -120,19 +125,6 @@ button:hover {
     text-decoration: underline;
 }
 
-.flash-messages {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 18px;
-}
-.flash-messages .success {
-    color: #2193b0;
-    background: #e0f7fa;
-    border-radius: 8px;
-    padding: 10px 0;
-    font-weight: 600;
-}
-
 @media (max-width: 700px) {
     .container {
         width: 98vw;
@@ -140,14 +132,14 @@ button:hover {
         min-width: unset;
         max-width: 99vw;
     }
-    h2 {
+    h1 {
         font-size: 1.3rem;
     }
     button {
         font-size: 1rem;
         padding: 12px;
     }
-    label, input, select, textarea {
+    label, input {
         font-size: 0.98rem;
     }
 }
@@ -161,10 +153,24 @@ button:hover {
     .container {
         padding: 8px 1vw;
     }
-    h2 {
+    h1 {
         font-size: 1.1rem;
     }
     button {
         font-size: 0.95rem;
     }
+}
+
+
+.flash-messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 18px;
+}
+.flash-messages .danger {
+    color: #e74c3c;
+    background: #ffeaea00;
+    border-radius: 8px;
+    padding: 10px 0;
+    font-weight: 600;
 }

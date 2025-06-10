@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Randevu Listesi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_admin__randevular.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Randevu Alan Hastalar</h2>
+        {% if randevular %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hasta Adı</th>
+                        <th>Klinik</th>
+                        <th>Doktor</th>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in randevular %}
+                    <tr>
+                        <td>{{ r.hasta_adi }}</td>
+                        <td>{{ r.klinik }}</td>
+                        <td>{{ r.doktor }}</td>
+                        <td>{{ r.tarih }}</td>
+                        <td>{{ r.saat }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Henüz randevu alan hasta yok.</p>
+        {% endif %}
+        <a class="back-link" href="/admin_panel">← Panele Dön</a>
+    </div>
+</body>
+</html>

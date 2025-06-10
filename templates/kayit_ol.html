@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Kayıt Ol</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_kayit_ol.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     
 </head>
@@ -12,16 +13,19 @@
         <h2>Kayıt Ol</h2>
         <form method="POST" action="/kayit_ol">
             <label for="isim">İsim</label>
-            <input type="text" id="isim" name="isim" required>
+            <input type="text" id="isim" name="isim" placeholder="İsim" required>
 
             <label for="soyisim">Soy İsim</label>
-            <input type="text" id="soyisim" name="soyisim" required>
+            <input type="text" id="soyisim" name="soyisim" placeholder="Soyisim" required>
+
+            <label for="tc">TC Kimlik Numarası</label>
+            <input type="text" id="tc" name="tc" maxlength="11" pattern="[0-9]{11}" placeholder="TC Kimlik No" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11);">
 
             <label for="telefon">Telefon Numarası</label>
-            <input type="tel" id="telefon" name="telefon" maxlength="11" pattern="[0-9]{11}" placeholder="5XXXXXXXXXX" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11);">
+            <input type="tel" id="telefon" name="telefon" maxlength="11" pattern="[0-9]{11}" placeholder="05XXXXXXXXX" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11);">
 
             <label for="sifre">Şifre</label>
-            <input type="password" id="sifre" name="sifre" required>
+            <input type="password" id="sifre" name="sifre" placeholder="Şifre" required>
 
             <button type="submit">Kayıt Ol</button>
         </form>

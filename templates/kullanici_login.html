@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8" />
-    <title>Kullanıcı Girişi</title>
+    <title>Hasta Girişi</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style_kullanici_login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -10,28 +10,32 @@
 </head>
 <body>
     <div class="container">
-        <h1>Kullanıcı Girişi</h1>
+        <h1>Hasta Girişi</h1>
 
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             <ul class="flash-messages">
-              {% for mesaj in messages %}
-                <li>{{ mesaj }}</li>
+              {% for category, mesaj in messages %}
+                <li class="{{ category }}">{{ mesaj }}</li>
               {% endfor %}
             </ul>
           {% endif %}
         {% endwith %}
 
         <form method="POST" action="/kullanici">
-            <label for="kullanici_adi">Kullanıcı Adı</label>
-            <input type="text" id="kullanici_adi" name="kullanici_adi" required value="{{ request.args.get('kullanici_adi', '') }}">
+            <label for="kullanici_adi">Hasta Adı</label>
+            <input type="text" id="kullanici_adi" name="kullanici_adi" placeholder="İsim Soyisim" value="{{ request.args.get('kullanici_adi', '') }}">
+
+            <label for="tc">TC Kimlik Numarası</label>
+            <input type="text" id="tc" name="tc" maxlength="11" pattern="[0-9]{11}" placeholder="TC Kimlik No" required inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11);">
 
             <label for="sifre">Şifre</label>
-            <input type="password" id="sifre" name="sifre" required>
+            <input type="password" id="sifre" name="sifre" placeholder="Şifre" required>
 
             <button type="submit">Giriş Yap</button>
         </form>
 
+        <a class="back-link" href="/sifremi_unuttum">Şifremi Unuttum?</a>
         <a class="back-link" href="/">← Anasayfa</a>
     </div>
 </body>

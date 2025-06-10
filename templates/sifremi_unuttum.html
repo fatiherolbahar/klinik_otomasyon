@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Şifremi Unuttum</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_sifremi_unuttum.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Şifre Yenile</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flash-messages">
+              {% for category, mesaj in messages %}
+                <li class="{{ category }}">{{ mesaj }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <form method="POST" action="/sifremi_unuttum">
+            <label for="kullanici_adi">İsim Soyisim</label>
+            <input type="text" id="kullanici_adi" name="kullanici_adi" placeholder="İsim Soyisim" required>
+
+            <label for="tc">TC Kimlik Numarası</label>
+            <input type="text" id="tc" name="tc" maxlength="11" pattern="[0-9]{11}" required placeholder="TC Kimlik No">
+
+            <label for="yeni_sifre">Yeni Şifre</label>
+            <input type="password" id="yeni_sifre" name="yeni_sifre" placeholder="Yeni Şifre" required>
+
+            <label for="yeni_sifre_tekrar">Yeni Şifre (Tekrar)</label>
+            <input type="password" id="yeni_sifre_tekrar" name="yeni_sifre_tekrar" placeholder="Yeni Şifre (Tekrar)" required>
+
+            <button type="submit">Şifreyi Yenile</button>
+        </form>
+        <a class="back-link" href="/kullanici">← Girişe Dön</a>
+    </div>
+</body>
+</html>

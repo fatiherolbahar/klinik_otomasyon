@@ -1,0 +1,13 @@
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/static/klinik.jpg'), linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

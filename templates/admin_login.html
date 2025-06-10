@@ -3,89 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <title>Admin Girişi</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #d7e1ec, #f2f6fc);
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 320px;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        label {
-            margin-top: 15px;
-            text-align: left;
-            color: #444;
-            font-weight: 500;
-        }
-
-        input {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            margin-top: 5px;
-        }
-
-        button {
-            margin-top: 25px;
-            padding: 12px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            background-color: #4a90e2;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #357abd;
-        }
-
-        .flash-messages {
-            color: red;
-            margin-bottom: 10px;
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .back-link {
-            display: block;
-            margin-top: 20px;
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_admin_login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">

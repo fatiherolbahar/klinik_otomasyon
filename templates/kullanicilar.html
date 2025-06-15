@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Kullanıcılar Listesi</title>
+</head>
+<body>
+    <h2>Kayıtlı Kullanıcılar</h2>
+    {% if kullanicilar %}
+        <ul>
+            {% for k in kullanicilar %}
+                <li>ID: {{ k[0] }} - Kullanıcı Adı: {{ k[1] }} - TC: {{ k[2] }} - Telefon: {{ k[3] }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Kayıtlı kullanıcı bulunamadı.</p>
+    {% endif %}
+    <a href="/">Anasayfa</a>
+</body>
+</html>

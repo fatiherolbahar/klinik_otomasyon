@@ -9,13 +9,14 @@ body {
 }
 .container {
     background: rgba(255,255,255,0.97);
-    padding: 48px 54px 36px 54px;
+    padding: 12px 54px 36px 54px;
     border-radius: 22px;
     box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
     text-align: center;
-    width: 375px;
+    width: 300px;
     position: relative;
     overflow: hidden;
+    
 }
 .container::before {
     content: "";

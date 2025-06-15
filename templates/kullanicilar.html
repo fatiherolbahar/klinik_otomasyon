@@ -3,18 +3,93 @@
 <head>
     <meta charset="UTF-8" />
     <title>Kullanıcılar Listesi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_kullanicilar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h2>Kayıtlı Kullanıcılar</h2>
-    {% if kullanicilar %}
-        <ul>
-            {% for k in kullanicilar %}
-                <li>ID: {{ k[0] }} - Kullanıcı Adı: {{ k[1] }} - TC: {{ k[2] }} - Telefon: {{ k[3] }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Kayıtlı kullanıcı bulunamadı.</p>
-    {% endif %}
-    <a href="/">Anasayfa</a>
+    <nav class="navbar">
+      <div class="navbar-logo">
+        <span class="logo-text">Beykent Diş Polikliniği</span>
+      </div>
+      <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="/">Anasayfa</a></li>
+        <li><a href="/hekimler">Hekimler</a></li>
+        <li><a href="/admin__randevular">Randevular</a></li>
+        <li><a href="/logout">Çıkış</a></li>
+      </ul>
+    </nav>
+    <div class="kullanicilar-container" style="margin-top:72px;">
+        <h1>Kayıtlı Kullanıcılar</h1>
+        {% if kullanicilar %}
+            <table class="kullanicilar-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>TC</th>
+                        <th>Telefon</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for k in kullanicilar %}
+                        <tr>
+                            <td>{{ k[0] }}</td>
+                            <td>{{ k[1] }}</td>
+                            <td>{{ k[2] }}</td>
+                            <td>{{ k[3] }}</td>
+                            <td>
+                                <button 
+                                    type="button" 
+                                    class="kullanici-btn" 
+                                    data-url="{{ url_for('kullanici_sil', kullanici_id=k[0]) }}" 
+                                    onclick="silModalAc(this)">
+                                    Sil
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Kayıtlı kullanıcı bulunamadı.</p>
+        {% endif %}
+        <a class="back-link" href="{{ url_for('admin_panel') }}">← Geri</a>
+    </div>
+
+    <!-- Modal ve script buraya eklenecek -->
+    <div id="silModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close" onclick="modalKapat()">&times;</span>
+        <h2>Kullanıcıyı Silmek İstiyor Musunuz?</h2>
+        <p>Bu işlemi geri alamazsınız.</p>
+        <form id="silForm" method="post">
+          <button type="submit" class="modal-btn evet">Evet</button>
+          <button type="button" class="modal-btn hayir" onclick="modalKapat()">Hayır</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+    function silModalAc(btn) {
+        var url = btn.getAttribute('data-url');
+        document.getElementById('silForm').action = url;
+        document.getElementById('silModal').style.display = "flex";
+    }
+    function modalKapat() {
+        document.getElementById('silModal').style.display = "none";
+    }
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('silModal')) {
+            modalKapat();
+        }
+    }
+    function toggleMenu() {
+      var links = document.getElementById('navbarLinks');
+      links.classList.toggle('open');
+    }
+    </script>
 </body>
 </html>

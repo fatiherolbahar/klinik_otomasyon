@@ -1,0 +1,277 @@
+/* GENEL STİL */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* KULLANICILAR CONTAINER */
+.kullanicilar-container {
+    background: rgba(255,255,255,0.97);
+    padding: 44px 38px 32px 38px;
+    border-radius: 22px;
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
+    margin-top: 48px;
+    width: 800px;
+    max-width: 98vw;
+    position: relative;
+    overflow: hidden;
+}
+.kullanicilar-container::before {
+    content: "";
+    position: absolute;
+    top: -80px; left: -80px;
+    width: 180px; height: 180px;
+    background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
+    border-radius: 50%;
+    opacity: 0.18;
+    z-index: 0;
+}
+.kullanicilar-container::after {
+    content: "";
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 180px; height: 180px;
+    background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+    border-radius: 50%;
+    opacity: 0.18;
+    z-index: 0;
+}
+
+/* BAŞLIK */
+.kullanicilar-container h1 {
+    margin-bottom: 28px;
+    color: #2193b0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    z-index: 1;
+    position: relative;
+}
+
+/* TABLO STİLİ */
+.kullanicilar-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+    z-index: 1;
+    position: relative;
+}
+
+.kullanicilar-table th, .kullanicilar-table td {
+    padding: 14px 10px;
+    border-bottom: 1.5px solid #e0eafc;
+    text-align: left;
+    font-size: 1.05rem;
+}
+
+.kullanicilar-table th {
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 8px 8px 0 0;
+}
+
+.kullanicilar-table tr:hover {
+    background: #eaf6fb;
+    transition: background 0.2s;
+}
+
+.kullanicilar-table td {
+    color: #357abd;
+}
+
+/* BUTONLAR */
+.kullanici-btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(33,147,176,0.10);
+    transition: background 0.3s, transform 0.2s;
+    font-size: 1rem;
+    margin-right: 6px;
+}
+
+.kullanici-btn:hover {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    transform: translateY(-2px) scale(1.03);
+}
+
+/* ARAMA KUTUSU */
+.kullanici-search {
+    width: 60%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1.5px solid #b2d8f7;
+    margin-bottom: 22px;
+    font-size: 1rem;
+    background: #f8fbff;
+    transition: border 0.2s;
+}
+
+.kullanici-search:focus {
+    border: 1.5px solid #2193b0;
+    outline: none;
+    background: #eaf6fb;
+}
+
+/* GERİ LİNKİ */
+.back-link {
+    display: block;
+    margin-top: 24px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    z-index: 1;
+    position: relative;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* MODAL STİLİ */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(33, 147, 176, 0.18);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    text-align: center;
+    position: relative;
+    min-width: 320px;
+    max-width: 90vw;
+}
+.modal-content h2 {
+    color: #2193b0;
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+.modal-content p {
+    color: #357abd;
+    margin-bottom: 24px;
+}
+.modal-btn {
+    padding: 10px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.modal-btn.evet {
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: #fff;
+}
+.modal-btn.evet:hover {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    transform: scale(1.04);
+}
+.modal-btn.hayir {
+    background: #e0eafc;
+    color: #2193b0;
+}
+.modal-btn.hayir:hover {
+    background: #cfdef3;
+    transform: scale(1.04);
+}
+.modal-close {
+    position: absolute;
+    top: 12px; right: 18px;
+    font-size: 1.5rem;
+    color: #2193b0;
+    cursor: pointer;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .kullanicilar-container {
+        width: 98vw;
+        padding: 18px 2vw;
+        min-width: unset;
+        max-width: 99vw;
+    }
+    .kullanicilar-table th, .kullanicilar-table td {
+        font-size: 0.98rem;
+        padding: 10px 4px;
+    }
+    .kullanici-search {
+        width: 95%;
+    }
+    .kullanicilar-container h1 {
+        font-size: 1.3rem;
+    }
+}
+@media (max-width: 500px) {
+    .kullanicilar-container {
+        width: 99vw;
+        padding: 10px 1vw;
+    }
+    .kullanicilar-container h1 {
+        font-size: 1.1rem;
+    }
+    .kullanici-btn {
+        font-size: 0.95rem;
+        padding: 8px 8px;
+    }
+}
+
+/* MODAL VE SCRIPT */
+<a class="back-link" href="{{ url_for('admin_panel') }}">← Geri</a>
+    </div>
+
+    <!-- Modal ve script buraya eklenecek -->
+    <div id="silModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close" onclick="modalKapat()">&times;</span>
+        <h2>Kullanıcıyı Silmek İstiyor Musunuz?</h2>
+        <p>Bu işlemi geri alamazsınız.</p>
+        <form id="silForm" method="post">
+          <button type="submit" class="modal-btn evet">Evet</button>
+          <button type="button" class="modal-btn hayir" onclick="modalKapat()">Hayır</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+    let silUrl = "";
+    function silModalAc(url) {
+        silUrl = url;
+        document.getElementById('silForm').action = silUrl;
+        document.getElementById('silModal').style.display = "flex";
+    }
+    function modalKapat() {
+        document.getElementById('silModal').style.display = "none";
+    }
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('silModal')) {
+            modalKapat();
+        }
+    }
+    </script>
+</body>
+</html>

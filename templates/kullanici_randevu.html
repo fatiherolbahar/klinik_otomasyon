@@ -6,73 +6,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style_kullanici_randevu.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script>
-        // Kliniklere göre doktorlar
-        const doktorlar = {
-            "Diş Hekimliği": ["Dr. Fatih Erol Bahar", "Dr. Berika Ertem"],
-            "Ortodonti": ["Dr. Zeynep Kaan"],
-            "Pedodonti": ["Dr. Sibel Bahar"],
-            "Periodontoloji": ["Dr. Sabri Bahar"],
-            "Protez": ["Dr. Begüm Erbil", "Dr. Taha Erbil"],
-            "Cerrahi": ["Dr. Kaan Yılmaz"]
-        };
-
-        window.onload = function() {
-            const klinikSelect = document.getElementById("klinik");
-            const doktorSelect = document.getElementById("doktor");
-            const tarihInput = document.getElementById("tarih");
-            const saatSelect = document.getElementById("saat");
-
-            // Başlangıçta sadece klinik aktif, diğerleri pasif
-            doktorSelect.disabled = true;
-            tarihInput.disabled = true;
-            saatSelect.disabled = true;
-
-            klinikSelect.addEventListener("change", function() {
-                // Klinik seçildiyse doktorları güncelle ve aktif et
-                const klinik = klinikSelect.value;
-                doktorSelect.innerHTML = '<option value="">Seçiniz</option>';
-                if (doktorlar[klinik]) {
-                    doktorlar[klinik].forEach(function(doktor) {
-                        doktorSelect.innerHTML += `<option value="${doktor}">${doktor}</option>`;
-                    });
-                    doktorSelect.disabled = false;
-                } else {
-                    doktorSelect.disabled = true;
-                }
-                // Klinik değişirse diğer alanları sıfırla ve pasifleştir
-                tarihInput.value = "";
-                tarihInput.disabled = true;
-                saatSelect.selectedIndex = 0;
-                saatSelect.disabled = true;
-            });
-
-            doktorSelect.addEventListener("change", function() {
-                // Doktor seçildiyse tarihi aktif et
-                if (doktorSelect.value) {
-                    tarihInput.disabled = false;
-                } else {
-                    tarihInput.value = "";
-                    tarihInput.disabled = true;
-                    saatSelect.selectedIndex = 0;
-                    saatSelect.disabled = true;
-                }
-            });
-
-            tarihInput.addEventListener("change", function() {
-                // Tarih seçildiyse saat aktif et
-                if (tarihInput.value) {
-                    saatSelect.disabled = false;
-                } else {
-                    saatSelect.selectedIndex = 0;
-                    saatSelect.disabled = true;
-                }
-            });
-        }
-    </script>
 </head>
 <body>
-    <div class="container">
+    <nav class="navbar">
+      <div class="navbar-logo">
+        <span class="logo-text">Beykent Diş Polikliniği</span>
+      </div>
+      <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="/">Anasayfa</a></li>
+        <li><a href="/hekimler">Hekimler</a></li>
+        <li><a href="/admin__randevular">Randevular</a></li>
+        <li><a href="/logout">Çıkış</a></li>
+      </ul>
+    </nav>
+    <div class="container" style="margin-top:72px;">
         <h2>Randevu Al</h2>
         <form method="POST" action="/kullanici_randevu">
             <label for="klinik">Klinik</label>
@@ -138,5 +86,75 @@
         </div>
     </div>
     {% endif %}
+
+    <script>
+        // Kliniklere göre doktorlar
+        const doktorlar = {
+            "Diş Hekimliği": ["Dr. Fatih Erol Bahar", "Dr. Berika Ertem"],
+            "Ortodonti": ["Dr. Zeynep Kaan"],
+            "Pedodonti": ["Dr. Sibel Bahar"],
+            "Periodontoloji": ["Dr. Sabri Bahar"],
+            "Protez": ["Dr. Begüm Erbil", "Dr. Taha Erbil"],
+            "Cerrahi": ["Dr. Kaan Yılmaz"]
+        };
+
+        window.onload = function() {
+            const klinikSelect = document.getElementById("klinik");
+            const doktorSelect = document.getElementById("doktor");
+            const tarihInput = document.getElementById("tarih");
+            const saatSelect = document.getElementById("saat");
+
+            // Başlangıçta sadece klinik aktif, diğerleri pasif
+            doktorSelect.disabled = true;
+            tarihInput.disabled = true;
+            saatSelect.disabled = true;
+
+            klinikSelect.addEventListener("change", function() {
+                // Klinik seçildiyse doktorları güncelle ve aktif et
+                const klinik = klinikSelect.value;
+                doktorSelect.innerHTML = '<option value="">Seçiniz</option>';
+                if (doktorlar[klinik]) {
+                    doktorlar[klinik].forEach(function(doktor) {
+                        doktorSelect.innerHTML += `<option value="${doktor}">${doktor}</option>`;
+                    });
+                    doktorSelect.disabled = false;
+                } else {
+                    doktorSelect.disabled = true;
+                }
+                // Klinik değişirse diğer alanları sıfırla ve pasifleştir
+                tarihInput.value = "";
+                tarihInput.disabled = true;
+                saatSelect.selectedIndex = 0;
+                saatSelect.disabled = true;
+            });
+
+            doktorSelect.addEventListener("change", function() {
+                // Doktor seçildiyse tarihi aktif et
+                if (doktorSelect.value) {
+                    tarihInput.disabled = false;
+                } else {
+                    tarihInput.value = "";
+                    tarihInput.disabled = true;
+                    saatSelect.selectedIndex = 0;
+                    saatSelect.disabled = true;
+                }
+            });
+
+            tarihInput.addEventListener("change", function() {
+                // Tarih seçildiyse saat aktif et
+                if (tarihInput.value) {
+                    saatSelect.disabled = false;
+                } else {
+                    saatSelect.selectedIndex = 0;
+                    saatSelect.disabled = true;
+                }
+            });
+        }
+
+        function toggleMenu() {
+          var links = document.getElementById('navbarLinks');
+          links.classList.toggle('open');
+        }
+    </script>
 </body>
 </html>

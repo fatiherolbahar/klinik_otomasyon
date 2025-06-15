@@ -6,10 +6,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style_index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+   
 </head>
 <body>
-    <div class="container">
-        <h2>Diş Polikliniği</h2>
+    <nav class="navbar">
+      <div class="navbar-logo">
+        <span class="logo-text">Beykent Diş Polikliniği</span>
+      </div>
+      <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="/">Anasayfa</a></li>
+        <li><a href="/hekimler">Hekimler</a></li>
+        <li><a href="/admin__randevul">Randevular</a></li>
+        <li><a href="/logout">Çıkış</a></li>
+      </ul>
+    </nav>
+    <div class="container" style="margin-bottom:15px;">
+        <h2>Beykent Diş Polikliniği Randevu Sistemi</h2>
         <form action="/admin" method="get">
             <button class="login-btn" type="submit">Doktor Girişi</button>
         </form>
@@ -18,8 +31,14 @@
         </form>
         <a class="register-link" href="/kayit_ol">Kayıt Ol</a>
         <div class="footer">
-            © 2025 Diş Polikliniği Randevu Sistemi
+            © 2025 Beykent Diş Polikliniği Randevu Sistemi
         </div>
     </div>
+    <script>
+      function toggleMenu() {
+        var links = document.getElementById('navbarLinks');
+        links.classList.toggle('open');
+      }
+    </script>
 </body>
 </html>

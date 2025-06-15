@@ -1,0 +1,212 @@
+/* GENEL */
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* NAVBAR */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 96px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    padding: 0 40px;
+    box-shadow: 0 2px 12px rgba(33,147,176,0.10);
+    box-sizing: border-box;
+}
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    height: 96px;
+    margin-right: 32px;
+}
+.logo-img {
+    height: 72px;
+    margin-right: 18px;
+    display: block;
+}
+.logo-text {
+    color: #fff;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    margin-left: 0;
+    white-space: nowrap;
+}
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    height: 96px;
+}
+.navbar-links li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    line-height: 96px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+.navbar-links li a:hover {
+    color: #e0eafc;
+}
+.navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    cursor: pointer;
+    height: 96px;
+    align-items: center;
+}
+@media (max-width: 700px) {
+    .navbar {
+        height: 60px;
+        padding: 0 12px;
+    }
+    .navbar-logo {
+        height: 60px;
+    }
+    .logo-img {
+        height: 40px;
+    }
+    .logo-text {
+        font-size: 1.2rem;
+    }
+    .navbar-links {
+        top: 60px;
+        height: auto;
+        gap: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 0;
+    }
+    .navbar-links li a {
+        font-size: 1rem;
+        line-height: 2.5;
+        height: auto;
+        padding: 8px 0;
+    }
+    .navbar-toggle {
+        display: block;
+        font-size: 2rem;
+        height: 60px;
+    }
+}
+body {
+    padding-top: 96px;
+}
+
+/* HEKİMLER BÖLÜMÜ */
+.hekimlerimiz {
+    padding: 48px 0 32px 0;
+}
+.container {
+    background: rgba(255,255,255,0.97);
+    padding: 36px 32px 24px 32px;
+    border-radius: 22px;
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+.section-title {
+    color: #2193b0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 32px;
+}
+.doktorlar-grid {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.doktor-kart {
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+    padding: 32px 18px 24px 18px;
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: visible;
+}
+.doktor-kart:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 16px 40px 0 rgba(33,147,176,0.18);
+}
+.doktor-kart img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px 0 rgba(33,147,176,0.10);
+    border: 4px solid #2193b0;
+    background: #fff;
+    display: block;
+    position: relative;
+    top: -40px;
+    z-index: 2;
+}
+.doktor-kart h3 {
+    color: #2193b0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: -18px 0 8px 0;
+    text-align: center;
+    z-index: 1;
+    position: relative;
+}
+.doktor-kart p {
+    color: #357abd;
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 600;
+    text-align: center;
+    z-index: 1;
+    position: relative;
+}
+@media (max-width: 900px) {
+    .doktorlar-grid {
+        gap: 18px;
+    }
+    .container {
+        padding: 18px 2vw;
+        max-width: 99vw;
+    }
+}
+@media (max-width: 700px) {
+    .doktorlar-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+    .container {
+        padding: 12px 1vw;
+    }
+    .section-title {
+        font-size: 1.2rem;
+    }
+}

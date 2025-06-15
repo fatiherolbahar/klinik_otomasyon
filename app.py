@@ -173,5 +173,26 @@ def kullanicilar():
     conn.close()
     return render_template("kullanicilar.html", kullanicilar=kullanicilar)
 
+def get_db_connection():
+    conn = sqlite3.connect('user.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route('/kullanici_sil/<int:kullanici_id>', methods=['POST'])
+def kullanici_sil(kullanici_id):
+    # Silme işlemi burada yapılacak
+    try:
+        conn = sqlite3.connect("user.db")
+        conn.execute('DELETE FROM kullanicilar WHERE id = ?', (kullanici_id,))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        return f"Hata oluştu: {e}"
+    return redirect(url_for('kullanicilar'))
+
+@app.route("/hekimler")
+def hekimler():
+    return render_template("hekimler.html")
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

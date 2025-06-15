@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Hekimlerimiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_hekimler.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+
+</head>
+<body>
+    <nav class="navbar">
+      <div class="navbar-logo">
+        <span class="logo-text">Klinik Otomasyon</span>
+      </div>
+      <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="/">Anasayfa</a></li>
+        <li><a href="/kullanicilar">Kullanıcılar</a></li>
+        <li><a href="/admin__randevular">Randevular</a></li>
+        <li><a href="/logout">Çıkış</a></li>
+      </ul>
+    </nav>
+    <section class="hekimlerimiz" style="margin-top: 96px;">
+      <div class="container">
+        <h2 class="section-title">Hekimlerimiz</h2>
+        <div class="doktorlar-grid">
+          <div class="doktor-kart">
+            <img src="/static/hekimfoto/umut_dincer.jpeg" alt="Dr. Umut Dinçer">
+            <h3>Dt. Umut Dinçer</h3>
+            <p>Protez Uzmanı</p>
+          </div>
+          <div class="doktor-kart">
+            <img src="/static/hekimfoto/deniz_ozkan.jpeg" alt="Dr. Deniz Özkan">
+            <h3>Dt. Deniz Özkan</h3>
+            <p>Ortodonti Uzmanı</p>
+          </div>
+          <div class="doktor-kart">
+            <img src="/static/hekimfoto/elif_gokdogan.jpeg" alt="Dr. Elif Gökdoğan">
+            <h3>Dt. Elif Gökdoğan</h3>
+            <p>Pedodontist (Çocuk Diş Hekimi)</p>
+          </div>
+          <div class="doktor-kart">
+            <img src="/static/hekimfoto/onurhan_tuzun.jpeg" alt="Dr. Onurhan Tüzün">
+            <h3>Dt. Onurhan Tüzün</h3>
+            <p>Periodontoloji</p>
+          </div>
+          <div class="doktor-kart">
+            <img src="/static/hekimfoto/burcin_kemal.jpeg" alt="Dr. Burçin Kemal">
+            <h3>Dt. Burçin Kemal</h3>
+            <p>Diş Hekimliği</p>
+        </div>
+        <div class="doktor-kart">
+            <img src="/static/hekimfoto/bartu_petrova.jpeg" alt="Dr. Bartu Petrova">
+            <h3>Dt. Bartu Petrova</h3>
+            <p>Cerrahi</p>
+          </div>
+      </div>
+    </section>
+    <script>
+    function toggleMenu() {
+      var links = document.getElementById('navbarLinks');
+      links.classList.toggle('open');
+    }
+    </script>
+</body>
+</html>

@@ -64,6 +64,89 @@ tr:hover {
     text-decoration: underline;
     color: #2193b0;
 }
+.kullanici-btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(33,147,176,0.10);
+    transition: background 0.3s, transform 0.2s;
+    font-size: 1rem;
+    margin-right: 6px;
+    outline: none;
+}
+
+.kullanici-btn:hover {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    transform: translateY(-2px) scale(1.03);
+}
+
+/* Modal stilleri */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(33, 147, 176, 0.18);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    text-align: center;
+    position: relative;
+    min-width: 320px;
+    max-width: 90vw;
+}
+.modal-content h2 {
+    color: #2193b0;
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+.modal-content p {
+    color: #357abd;
+    margin-bottom: 24px;
+}
+.modal-btn {
+    padding: 10px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.modal-btn.evet {
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: #fff;
+}
+.modal-btn.evet:hover {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    transform: scale(1.04);
+}
+.modal-btn.hayir {
+    background: #e0eafc;
+    color: #2193b0;
+}
+.modal-btn.hayir:hover {
+    background: #cfdef3;
+    transform: scale(1.04);
+}
+.modal-close {
+    position: absolute;
+    top: 12px; right: 18px;
+    font-size: 1.5rem;
+    color: #2193b0;
+    cursor: pointer;
+}
 @media (max-width: 700px) {
     .container {
         padding: 12px 2vw;

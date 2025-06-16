@@ -16,12 +16,12 @@
       <ul class="navbar-links" id="navbarLinks">
         <li><a href="/">Anasayfa</a></li>
         <li><a href="/hekimler">Hekimler</a></li>
-        <li><a href="/admin__randevular">Randevular</a></li>
-        <li><a href="/cikis">Çıkış</a></li>
+        <li><a href="/kullanicilar">Kullanıcılar</a></li>
+        <li><a href="/logout">Çıkış</a></li>
       </ul>
     </nav>
-    <div class="container" style="margin-top:32px;">
-        <h2>Randevu Alan Hastalar</h2>
+    <div class="container" style="margin-top:72px;">
+        <h2>Randevu Listesi</h2>
         {% if randevular %}
             <table>
                 <thead>
@@ -31,27 +31,67 @@
                         <th>Doktor</th>
                         <th>Tarih</th>
                         <th>Saat</th>
+                        {% if doktor_adi == "admin" %}
+                        <th>İşlem</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for r in randevular %}
-                    <tr>
-                        <td>{{ r.hasta_adi }}</td>
-                        <td>{{ r.klinik }}</td>
-                        <td>{{ r.doktor }}</td>
-                        <td>{{ r.tarih }}</td>
-                        <td>{{ r.saat }}</td>
-                    </tr>
+                        <tr>
+                            <td>{{ r.hasta_adi }}</td>
+                            <td>{{ r.klinik }}</td>
+                            <td>{{ r.doktor }}</td>
+                            <td>{{ r.tarih }}</td>
+                            <td>{{ r.saat }}</td>
+                            {% if doktor_adi == "admin" %}
+                            <td>
+                                <button 
+                                  type="button" 
+                                  class="kullanici-btn" 
+                                  data-url="{{ url_for('randevu_sil', randevu_id=r.id) }}" 
+                                  onclick="silModalAc(this)">
+                                  Sil
+                                </button>
+                            </td>
+                            {% endif %}
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
         {% else %}
-            <p>Henüz randevu alan hasta yok.</p>
+            <p>Randevu bulunamadı.</p>
         {% endif %}
-        <a class="back-link" href="/admin_panel">← Panele Dön</a>
+        <a class="back-link" href="{{ url_for('admin_panel') }}">← Panele Dön</a>
+    </div>
+
+    <!-- Modal ve script -->
+    <div id="silModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close" onclick="modalKapat()">&times;</span>
+        <h2>Randevuyu Silmek İstiyor Musunuz?</h2>
+        <p>Bu işlemi geri alamazsınız.</p>
+        <form id="silForm" method="post">
+          <button type="submit" class="modal-btn evet">Evet</button>
+          <button type="button" class="modal-btn hayir" onclick="modalKapat()">Hayır</button>
+        </form>
+      </div>
     </div>
 
     <script>
+    function silModalAc(btn) {
+        var url = btn.getAttribute('data-url');
+        document.getElementById('silForm').action = url;
+        document.getElementById('silModal').style.display = "flex";
+    }
+    function modalKapat() {
+        document.getElementById('silModal').style.display = "none";
+    }
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('silModal')) {
+            modalKapat();
+        }
+    }
     function toggleMenu() {
       var links = document.getElementById('navbarLinks');
       links.classList.toggle('open');

@@ -103,6 +103,8 @@ body {
     transition: background 0.3s, transform 0.2s;
     font-size: 1rem;
     margin-right: 6px;
+    /* Ekstra: */
+    outline: none;
 }
 
 .kullanici-btn:hover {
@@ -239,39 +241,3 @@ body {
         padding: 8px 8px;
     }
 }
-
-/* MODAL VE SCRIPT */
-<a class="back-link" href="{{ url_for('admin_panel') }}">← Geri</a>
-    </div>
-
-    <!-- Modal ve script buraya eklenecek -->
-    <div id="silModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close" onclick="modalKapat()">&times;</span>
-        <h2>Kullanıcıyı Silmek İstiyor Musunuz?</h2>
-        <p>Bu işlemi geri alamazsınız.</p>
-        <form id="silForm" method="post">
-          <button type="submit" class="modal-btn evet">Evet</button>
-          <button type="button" class="modal-btn hayir" onclick="modalKapat()">Hayır</button>
-        </form>
-      </div>
-    </div>
-
-    <script>
-    let silUrl = "";
-    function silModalAc(url) {
-        silUrl = url;
-        document.getElementById('silForm').action = silUrl;
-        document.getElementById('silModal').style.display = "flex";
-    }
-    function modalKapat() {
-        document.getElementById('silModal').style.display = "none";
-    }
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('silModal')) {
-            modalKapat();
-        }
-    }
-    </script>
-</body>
-</html>

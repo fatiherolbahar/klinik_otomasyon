@@ -63,8 +63,17 @@ def admin_login():
         kullanici_adi = request.form.get("kullanici_adi")
         sifre = request.form.get("sifre")
         # Sadece admin için sabit kontrol
-        if kullanici_adi == "admin" and sifre == "123":
+        if (
+            (kullanici_adi == "admin" and sifre == "123") or
+            (kullanici_adi == "Bartu Petrova" and sifre == "123") or
+            (kullanici_adi == "Burçin Kemal" and sifre == "123") or
+            (kullanici_adi == "Deniz Özkan" and sifre == "123") or
+            (kullanici_adi == "Elif Gökdoğan" and sifre == "123") or
+            (kullanici_adi == "Onurhan Tüzün" and sifre == "123") or
+            (kullanici_adi == "Umut Dinçer" and sifre == "123")
+        ):
             session["admin"] = True
+            session["doktor_adi"] = kullanici_adi   # <-- Burası eklendi
             return redirect(url_for("admin_panel"))
         else:
             flash("Kullanıcı adı veya şifre hatalı!", "danger")
@@ -74,7 +83,8 @@ def admin_login():
 def admin_panel():
     if not session.get("admin"):
         return redirect(url_for("admin_login"))
-    return render_template("admin_panel.html")
+    doktor_adi = session.get("doktor_adi", "Doktor")
+    return render_template("admin_panel.html", doktor_adi=doktor_adi)
 
 @app.route("/kullanici", methods=["GET", "POST"])
 def kullanici_login():
@@ -98,13 +108,15 @@ def kullanici_randevu():
         tarih = request.form.get("tarih")
         saat = request.form.get("saat")
         hasta_adi = session.get("kullanici_adi", "Bilinmeyen")
-        randevular.append({
-            "hasta_adi": hasta_adi,
-            "klinik": klinik,
-            "doktor": doktor,
-            "tarih": tarih,
-            "saat": saat
-        })
+        # --- BURASI GÜNCELLENDİ ---
+        conn = sqlite3.connect("user.db")
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO randevular (hasta_adi, klinik, doktor, tarih, saat) VALUES (?, ?, ?, ?, ?)",
+            (hasta_adi, klinik, doktor, tarih, saat)
+        )
+        conn.commit()
+        conn.close()
         flash("Randevunuz başarıyla oluşturuldu!", "success")
         return render_template("kullanici_randevu.html", current_date=turkiye_saati, success=True)
     return render_template("kullanici_randevu.html", current_date=turkiye_saati)
@@ -136,7 +148,29 @@ def logout():
 
 @app.route("/admin__randevular")
 def admin_randevular():
-    return render_template("admin__randevular.html", randevular=randevular)
+    if not session.get("admin"):
+        return redirect(url_for("admin_login"))
+    doktor_adi = session.get("doktor_adi")
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    # Eğer giriş yapan admin ise tüm randevuları çek, değilse sadece kendi randevularını
+    if doktor_adi == "admin":
+        cursor.execute("SELECT id, hasta_adi, klinik, doktor, tarih, saat FROM randevular")
+    else:
+        cursor.execute("SELECT id, hasta_adi, klinik, doktor, tarih, saat FROM randevular WHERE LOWER(doktor) LIKE ?", (f"%{doktor_adi.lower()}%",))
+    randevular = [
+        {
+            "id": row[0],
+            "hasta_adi": row[1],
+            "klinik": row[2],
+            "doktor": row[3],
+            "tarih": row[4],
+            "saat": row[5]
+        }
+        for row in cursor.fetchall()
+    ]
+    conn.close()
+    return render_template("admin__randevular.html", randevular=randevular, doktor_adi=doktor_adi)
 
 @app.route("/sifremi_unuttum", methods=["GET", "POST"])
 def sifremi_unuttum():
@@ -171,7 +205,8 @@ def kullanicilar():
     cursor.execute("SELECT id, kullanici_adi, tc, telefon FROM kullanicilar")
     kullanicilar = cursor.fetchall()
     conn.close()
-    return render_template("kullanicilar.html", kullanicilar=kullanicilar)
+    doktor_adi = session.get("doktor_adi", "")
+    return render_template("kullanicilar.html", kullanicilar=kullanicilar, doktor_adi=doktor_adi)
 
 def get_db_connection():
     conn = sqlite3.connect('user.db')
@@ -180,7 +215,9 @@ def get_db_connection():
 
 @app.route('/kullanici_sil/<int:kullanici_id>', methods=['POST'])
 def kullanici_sil(kullanici_id):
-    # Silme işlemi burada yapılacak
+    if session.get("doktor_adi") != "admin":
+        flash("Sadece admin kullanıcı silebilir!", "danger")
+        return redirect(url_for('kullanicilar'))
     try:
         conn = sqlite3.connect("user.db")
         conn.execute('DELETE FROM kullanicilar WHERE id = ?', (kullanici_id,))
@@ -189,6 +226,17 @@ def kullanici_sil(kullanici_id):
     except Exception as e:
         return f"Hata oluştu: {e}"
     return redirect(url_for('kullanicilar'))
+
+@app.route('/randevu_sil/<int:randevu_id>', methods=['POST'])
+def randevu_sil(randevu_id):
+    if session.get("doktor_adi") != "admin":
+        flash("Sadece admin randevu silebilir!", "danger")
+        return redirect(url_for('admin_randevular'))
+    conn = sqlite3.connect("user.db")
+    conn.execute('DELETE FROM randevular WHERE id = ?', (randevu_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('admin_randevular'))
 
 @app.route("/hekimler")
 def hekimler():

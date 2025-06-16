@@ -41,13 +41,15 @@
                             <td>{{ k[2] }}</td>
                             <td>{{ k[3] }}</td>
                             <td>
+                              {% if doktor_adi == "admin" %}
                                 <button 
-                                    type="button" 
-                                    class="kullanici-btn" 
-                                    data-url="{{ url_for('kullanici_sil', kullanici_id=k[0]) }}" 
-                                    onclick="silModalAc(this)">
-                                    Sil
+                                  type="button" 
+                                  class="kullanici-btn" 
+                                  data-url="{{ url_for('kullanici_sil', kullanici_id=k[0]) }}" 
+                                  onclick="silModalAc(this)">
+                                  Sil
                                 </button>
+                              {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
@@ -56,7 +58,7 @@
         {% else %}
             <p>Kayıtlı kullanıcı bulunamadı.</p>
         {% endif %}
-        <a class="back-link" href="{{ url_for('admin_panel') }}">← Geri</a>
+        <a class="back-link" href="{{ url_for('admin_panel') }}">← Panele Dön</a>
     </div>
 
     <!-- Modal ve script buraya eklenecek -->

@@ -13,7 +13,7 @@ def tablo_olustur():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             kullanici_adi TEXT NOT NULL,
             tc TEXT,
-            telefon TEXT,
+            eposta TEXT,
             sifre TEXT NOT NULL
         )
     """)
@@ -38,5 +38,5 @@ def kullanicilari_cek():
 kullanicilar = kullanicilari_cek()
 print("Kayıtlı Kullanıcılar:")
 for kullanici in kullanicilar:
-    print(f"ID: {kullanici[0]}, Kullanıcı Adı: {kullanici[1]}, TC: {kullanici[2]}, Telefon: {kullanici[3]}, Şifre: {kullanici[4]}")
+    print(f"ID: {kullanici[0]}, Kullanıcı Adı: {kullanici[1]}, TC: {kullanici[2]}, E-posta: {kullanici[3]}, Şifre: {kullanici[4]}")
 

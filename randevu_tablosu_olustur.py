@@ -17,3 +17,4 @@ def randevular_tablosu_olustur():
     conn.close()
 
 randevular_tablosu_olustur()
+

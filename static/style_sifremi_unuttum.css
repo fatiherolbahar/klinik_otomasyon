@@ -173,3 +173,10 @@ button:hover {
     padding: 10px 0;
     font-weight: 600;
 }
+.flash-messages .success {
+    color: #27ae60;
+    background: #eafaf1;
+    border-radius: 8px;
+    padding: 10px 0;
+    font-weight: 600;
+}

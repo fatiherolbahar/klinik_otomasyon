@@ -2,9 +2,18 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from datetime import datetime
 import pytz
 import sqlite3
+import random
+import smtplib
+from email.mime.text import MIMEText
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+import ssl
 
 app = Flask(__name__)
 app.secret_key = "gizli_anahtar"
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 # --- Veritabanı yardımcı fonksiyonları ---
 def veritabani_baglanti():
@@ -31,7 +40,10 @@ def kullanici_dogrula(kullanici_adi, tc, sifre):
 def kullanici_ekle(kullanici_adi, tc, telefon, sifre):
     conn = veritabani_baglanti()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO kullanicilar (kullanici_adi, tc, telefon, sifre) VALUES (?, ?, ?, ?)", (kullanici_adi, tc, telefon, sifre))
+    cursor.execute(
+        "INSERT INTO kullanicilar (kullanici_adi, tc, eposta, sifre) VALUES (?, ?, ?, ?)",
+        (kullanici_adi, tc, telefon, sifre)
+    )
     conn.commit()
     conn.close()
 
@@ -60,20 +72,22 @@ def index():
 @app.route("/admin", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        kullanici_adi = request.form.get("kullanici_adi")
+        kullanici_adi = request.form.get("kullanici_adi").strip()
         sifre = request.form.get("sifre")
-        # Sadece admin için sabit kontrol
+        # Eğer admin değilse, başına Dr. ekle
+        if kullanici_adi.lower() != "admin" and not kullanici_adi.startswith("Dt. "):
+            kullanici_adi = "Dt. " + kullanici_adi
         if (
             (kullanici_adi == "admin" and sifre == "123") or
-            (kullanici_adi == "Bartu Petrova" and sifre == "123") or
-            (kullanici_adi == "Burçin Kemal" and sifre == "123") or
-            (kullanici_adi == "Deniz Özkan" and sifre == "123") or
-            (kullanici_adi == "Elif Gökdoğan" and sifre == "123") or
-            (kullanici_adi == "Onurhan Tüzün" and sifre == "123") or
-            (kullanici_adi == "Umut Dinçer" and sifre == "123")
+            (kullanici_adi == "Dt. Bartu Petrova" and sifre == "123") or
+            (kullanici_adi == "Dt. Burçin Kemal" and sifre == "123") or
+            (kullanici_adi == "Dt. Deniz Özkan" and sifre == "123") or
+            (kullanici_adi == "Dt. Elif Gökdoğan" and sifre == "123") or
+            (kullanici_adi == "Dt. Onurhan Tüzün" and sifre == "123") or
+            (kullanici_adi == "Dt. Umut Dinçer" and sifre == "123")
         ):
             session["admin"] = True
-            session["doktor_adi"] = kullanici_adi   # <-- Burası eklendi
+            session["doktor_adi"] = kullanici_adi
             return redirect(url_for("admin_panel"))
         else:
             flash("Kullanıcı adı veya şifre hatalı!", "danger")
@@ -127,16 +141,16 @@ def kayit_ol():
         isim = request.form.get("isim", "").strip()
         soyisim = request.form.get("soyisim", "").strip()
         tc = request.form.get("tc", "").strip()
-        telefon = request.form.get("telefon", "").strip()
+        eposta = request.form.get("eposta", "").strip()
         sifre = request.form.get("sifre", "").strip()
-        if not (isim and soyisim and tc and telefon and sifre):
+        if not (isim and soyisim and tc and eposta and sifre):
             flash("Tüm alanları doldurmalısınız!", "danger")
             return redirect(url_for("kayit_ol"))
         kullanici_adi = f"{isim} {soyisim}"
         if kullanici_var_mi(kullanici_adi, tc):
             flash("Bu kullanıcı adı ve TC ile zaten kayıtlı!", "danger")
             return redirect(url_for("kayit_ol"))
-        kullanici_ekle(kullanici_adi, tc, telefon, sifre)
+        kullanici_ekle(kullanici_adi, tc, eposta, sifre)
         flash("Kayıt başarılı! Giriş yapabilirsiniz.", "success")
         return redirect(url_for("kullanici_login"))
     return render_template("kayit_ol.html")
@@ -153,11 +167,10 @@ def admin_randevular():
     doktor_adi = session.get("doktor_adi")
     conn = sqlite3.connect("user.db")
     cursor = conn.cursor()
-    # Eğer giriş yapan admin ise tüm randevuları çek, değilse sadece kendi randevularını
     if doktor_adi == "admin":
         cursor.execute("SELECT id, hasta_adi, klinik, doktor, tarih, saat FROM randevular")
     else:
-        cursor.execute("SELECT id, hasta_adi, klinik, doktor, tarih, saat FROM randevular WHERE LOWER(doktor) LIKE ?", (f"%{doktor_adi.lower()}%",))
+        cursor.execute("SELECT id, hasta_adi, klinik, doktor, tarih, saat FROM randevular WHERE doktor = ?", (doktor_adi,))
     randevular = [
         {
             "id": row[0],
@@ -172,37 +185,81 @@ def admin_randevular():
     conn.close()
     return render_template("admin__randevular.html", randevular=randevular, doktor_adi=doktor_adi)
 
+def kod_gonder(eposta, kod):
+    try:
+        message = Mail(
+            from_email='baharfatih043@gmail.com',  # Kendi mail adresin
+            to_emails=eposta,  # Veritabanından alınan e-posta
+            subject='Diş Kliniği | Şifre Yenileme Kodunuz',
+            html_content=f'''
+                <p>Merhaba,</p>
+                <p>Şifre yenileme talebiniz üzerine doğrulama kodunuz aşağıdadır:</p>
+                <h2 style="color:#007BFF;">{kod}</h2>
+                <p>Kod 5 dakika geçerlidir. Eğer bu talebi siz yapmadıysanız, lütfen bu mesajı dikkate almayınız.</p>
+                <br>
+                <p><em>Diş Kliniği Otomasyon Sistemi</em></p>
+            '''
+        )
+        api_key = os.environ.get("SENDGRID_API_KEY")
+        sg = SendGridAPIClient(api_key)
+        response = sg.send(message)
+        print(f"Mail gönderildi! Status code: {response.status_code}")
+        print(response.body)
+        print(response.headers)
+        return True
+    except Exception as e:
+        print(f"Hata oluştu: {e}")
+        return False
+
 @app.route("/sifremi_unuttum", methods=["GET", "POST"])
 def sifremi_unuttum():
     if request.method == "POST":
-        kullanici_adi = request.form.get("kullanici_adi")
+        isim = request.form.get("isim")
         tc = request.form.get("tc")
+        kod = request.form.get("kod")
         yeni_sifre = request.form.get("yeni_sifre")
-        yeni_sifre_tekrar = request.form.get("yeni_sifre_tekrar")
-
-        if yeni_sifre != yeni_sifre_tekrar:
-            flash("Yeni şifreler aynı olmalı!", "danger")
-            return redirect(url_for("sifremi_unuttum"))
-
-        eski_sifre = kullanici_sifre_getir(kullanici_adi, tc)
-        if eski_sifre is None:
-            flash("Kullanıcı adı veya TC Kimlik Numarası hatalı!", "danger")
-            return redirect(url_for("sifremi_unuttum"))
-        if eski_sifre == yeni_sifre:
-            flash("Yeni şifre eski şifreyle aynı olamaz!", "danger")
-            return redirect(url_for("sifremi_unuttum"))
-
-        sifre_guncelle(kullanici_adi, tc, yeni_sifre)
-        flash("Şifreniz başarıyla güncellendi. Giriş yapabilirsiniz.", "success")
-        return redirect(url_for("kullanici_login"))
-
+        if "dogrulama_iste" in request.form:
+            # Kullanıcıyı kontrol et ve e-postasını veritabanından al
+            conn = sqlite3.connect("user.db")
+            cursor = conn.cursor()
+            cursor.execute("SELECT eposta FROM kullanicilar WHERE kullanici_adi=? AND tc=?", (isim, tc))
+            result = cursor.fetchone()
+            conn.close()
+            if result:
+                eposta = result[0]
+                dogrulama_kodu = str(random.randint(100000, 999999))
+                session["dogrulama_kodu"] = dogrulama_kodu
+                session["sifremi_unuttum_bilgi"] = {"isim": isim, "tc": tc, "eposta": eposta}
+                kod_gonder(eposta, dogrulama_kodu)
+                flash("Doğrulama kodu e-posta adresinize gönderildi.", "success")
+                return render_template("sifremi_unuttum.html", kod_gonderildi=True, isim=isim, tc=tc, eposta=eposta)
+            else:
+                flash("Bilgiler hatalı!", "danger")
+        elif "sifre_yenile" in request.form:
+            isim = request.form.get("isim")
+            tc = request.form.get("tc")
+            eposta = request.form.get("eposta")
+            kod = request.form.get("kod")
+            yeni_sifre = request.form.get("yeni_sifre")
+            if kod == session.get("dogrulama_kodu"):
+                conn = sqlite3.connect("user.db")
+                cursor = conn.cursor()
+                cursor.execute("UPDATE kullanicilar SET sifre=? WHERE kullanici_adi=? AND tc=? AND eposta=?", (yeni_sifre, isim, tc, eposta))
+                conn.commit()
+                conn.close()
+                session.pop("dogrulama_kodu", None)
+                flash("Şifreniz başarıyla yenilendi!", "success")
+                return redirect(url_for("kullanici_login"))
+            else:
+                flash("Doğrulama kodu hatalı!", "danger")
+                return render_template("sifremi_unuttum.html", kod_gonderildi=True, isim=isim, tc=tc, eposta=eposta)
     return render_template("sifremi_unuttum.html")
 
 @app.route("/kullanicilar")
 def kullanicilar():
     conn = sqlite3.connect("user.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT id, kullanici_adi, tc, telefon FROM kullanicilar")
+    cursor.execute("SELECT id, kullanici_adi, tc, eposta, sifre FROM kullanicilar")
     kullanicilar = cursor.fetchall()
     conn.close()
     doktor_adi = session.get("doktor_adi", "")

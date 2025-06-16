@@ -16,8 +16,7 @@
       <ul class="navbar-links" id="navbarLinks">
         <li><a href="/">Anasayfa</a></li>
         <li><a href="/hekimler">Hekimler</a></li>
-        <li><a href="/admin__randevular">Randevular</a></li>
-        <li><a href="/logout">Çıkış</a></li>
+        <li><a href="/kullanicilar">Hizmetler</a></li>
       </ul>
     </nav>
     <div class="container" style="margin-top:72px;">
@@ -31,21 +30,31 @@
             </ul>
           {% endif %}
         {% endwith %}
-        <form method="POST" action="/sifremi_unuttum">
-            <label for="kullanici_adi">İsim Soyisim</label>
-            <input type="text" id="kullanici_adi" name="kullanici_adi" placeholder="İsim Soyisim" required>
+        {% if not kod_gonderildi %}
+        <form method="POST">
+            <label for="isim">İsim Soyisim</label>
+            <input type="text" id="isim" name="isim" placeholder="İsim Soyisim" required>
 
-            <label for="tc">TC Kimlik Numarası</label>
-            <input type="text" id="tc" name="tc" maxlength="11" pattern="[0-9]{11}" required placeholder="TC Kimlik No" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <label for="tc">TC Kimlik No</label>
+            <input type="text" id="tc" name="tc" placeholder="Tc Kimlik No" required maxlength="11" pattern="[0-9]{11}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,11);">
 
-            <label for="yeni_sifre">Yeni Şifre</label>
-            <input type="password" id="yeni_sifre" name="yeni_sifre" placeholder="Yeni Şifre" required>
+            <label for="eposta">E-posta</label>
+            <input type="email" id="eposta" name="eposta" placeholder="example@.com"required>
 
-            <label for="yeni_sifre_tekrar">Yeni Şifre (Tekrar)</label>
-            <input type="password" id="yeni_sifre_tekrar" name="yeni_sifre_tekrar" placeholder="Yeni Şifre (Tekrar)" required>
-
-            <button type="submit">Şifreyi Yenile</button>
+            <button type="submit" name="dogrulama_iste">Doğrulama Kodu Gönder</button>
         </form>
+        {% else %}
+        <form method="POST">
+            <input type="hidden" name="isim" value="{{ isim }}">
+            <input type="hidden" name="tc" value="{{ tc }}">
+            <input type="hidden" name="eposta" value="{{ eposta }}">
+            <label for="kod">E-posta Doğrulama Kodu</label>
+            <input type="text" id="kod" name="kod" required>
+            <label for="yeni_sifre">Yeni Şifre</label>
+            <input type="password" id="yeni_sifre" name="yeni_sifre" required>
+            <button type="submit" name="sifre_yenile">Şifreyi Yenile</button>
+        </form>
+        {% endif %}
         <a class="back-link" href="/kullanici">← Girişe Dön</a>
     </div>
     <script>

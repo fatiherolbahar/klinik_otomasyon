@@ -9,7 +9,14 @@ klinik otomasyonu
 
 // tarayıcıdan http://127.0.0.1:5000/ adresine gidiyoruz
 
-// Kullanıcı adı: admin        Şifre: 123            doktor panel sayfası
+//           Doktor Panel Sayfası Admin girişi
+
+           Kullanıcı adı: admin        Şifre: 123           
+
+
+//          Doktor Panel Sayfasına giriş için 
+
+    Doktor Adı: doktor ismi soyisimi   Şifre: 123
 
 
 export FLASK_DEBUG=1

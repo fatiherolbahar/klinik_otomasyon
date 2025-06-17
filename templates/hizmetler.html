@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hizmetlerimiz</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_hizmetler.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+      <div class="navbar-logo">
+        <span class="logo-text">Beykent Diş Polikliniği</span>
+      </div>
+      <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="/">Anasayfa</a></li>
+        <li><a href="/hekimler">Hekimler</a></li>
+        <li><a href="/hizmetler">Hizmetler</a></li>
+      </ul>
+    </nav>
+    <div class="hizmetler-container">
+        <h1 class="hizmetler-title">Diş Tedavileri</h1>
+        <div class="hizmetler-subtitle">"Gülüşünüzün geleceği, önleyici tedavilerimizle güvende.”</div>
+        <div class="hizmetler-grid">
+            <div class="hizmet-kart">
+                <img src="/static/hizmetlerfoto/gulus-tasarimi.png" alt="Dijital Gülüş Tasarımı">
+                <h3>Dijital Gülüş Tasarımı</h3>
+                <p>Kişiye özel gülüş tasarımı, dijital tarama ve 3D görüntüleme ile.</p>
+            </div>
+            <div class="hizmet-kart">
+                <img src="/static/hizmetlerfoto/implant-1.png" alt="Diş İmplantları">
+                <h3>Diş İmplantları</h3>
+                <p>Kayıp dişler için kalıcı ve estetik çözümler.</p>
+            </div>
+            <div class="hizmet-kart">
+                <img src="/static/hizmetlerfoto/protez.png" alt="Protez">
+                <h3>Protez</h3>
+                <p>Canlıların eksik ya da zarar görmüş uzuvlarının işlevini görmesi için kullanılan apareylerin geneline protez adı verilir. Kaplama, köprü ya da takma diş olarak bilinen diş protezleri de bu gruba girer.</p>
+            </div>
+            <div class="hizmet-kart">
+                <img src="/static/hizmetlerfoto/ortodonti.png" alt="Ortodonti">
+                <h3>Ortodonti</h3>
+                <p>Diş teli tedavisi olarak da adlandırılan ortodonti, çapraşık dişlerin ve diş, çene ve yüzdeki uyumsuzlukların giderilmesi için uygulanan bir tedavi yöntemidir.</p>
+            </div>
+            <div class="hizmet-kart">
+                <img src="/static/hizmetlerfoto/dis-cerrahi.png" alt="Diş Cerrahisi">
+                <h3>Diş Cerrahisi</h3>
+                <p>Ağız, diş ve çene bölgesinde oluşabilecek hastalıkların, yaralanmaların ve deformitelerin tedavisini kapsar.</p>
+            </div>
+            <div class="hizmet-kart">
+                <img src="/static/hizmetlerfoto/pedodonti.png" alt="Pedodonti">
+                <h3>Pedodonti</h3>
+                <p>0-13 yaş grubu çocukların süt ve daimi dişlerinin sağlıklı olarak korunmasını, çürük, travma, kalıtımsal ve benzeri etkenlerin bu dişlerde oluşturduğu sorunların tedavisini sağlar.</p>
+            </div>
+            <div class="hizmet-kart">
+                <img src="/static/hizmetlerfoto/agizkokusu.png" alt="Ağız Kokusu Giderme">
+                <h3>Ağız Kokusu Giderme</h3>
+                <p>Ağız kokusu bir hastalık olmakla birlikte kişiyi rahatsız ederek kaygı durumunu arttıran, kimi zaman utanç veren bir durumdur. Genellikle ağız hijyeninin tam ve düzenli olmamasından kaynaklanır.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

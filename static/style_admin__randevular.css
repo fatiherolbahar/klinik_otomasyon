@@ -147,6 +147,40 @@ tr:hover {
     color: #2193b0;
     cursor: pointer;
 }
+.modal-action-btn.sil {
+    background: linear-gradient(90deg, #e74c3c 0%, #ffb3b3 100%);
+    color: #fff;
+    padding: 14px 38px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    margin: 0 8px;
+    min-width: 120px;
+    transition: background 0.2s, transform 0.15s;
+}
+.modal-action-btn.sil:hover {
+    background: linear-gradient(90deg, #ffb3b3 0%, #e74c3c 100%);
+    transform: scale(1.04);
+}
+.modal-action-btn.hayir {
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: #fff;
+    padding: 14px 38px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    margin: 0 8px;
+    min-width: 120px;
+    transition: background 0.2s, transform 0.15s;
+}
+.modal-action-btn.hayir:hover {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    transform: scale(1.04);
+}
 @media (max-width: 700px) {
     .container {
         padding: 12px 2vw;

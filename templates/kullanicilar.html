@@ -16,43 +16,43 @@
       <ul class="navbar-links" id="navbarLinks">
         <li><a href="/">Anasayfa</a></li>
         <li><a href="/hekimler">Hekimler</a></li>
-        <li><a href="/kullanicilar">Hizmetler</a></li>
+        <li><a href="/hizmetler">Hizmetler</a></li>
       </ul>
     </nav>
     <div class="kullanicilar-container" style="margin-top:72px;">
         <h1>Kayıtlı Kullanıcılar</h1>
         {% if kullanicilar %}
             <table class="kullanicilar-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Kullanıcı Adı</th>
-                        <th>TC</th>
-                        <th>E-posta</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for k in kullanicilar %}
-                        <tr>
-                            <td>{{ k[0] }}</td>
-                            <td>{{ k[1] }}</td>
-                            <td>{{ k[2] }}</td>
-                            <td>{{ k[3] }}</td>
-                            <td>
-                              {% if doktor_adi == "admin" %}
-                                <button 
-                                  type="button" 
-                                  class="kullanici-btn" 
-                                  data-url="{{ url_for('kullanici_sil', kullanici_id=k[0]) }}" 
-                                  onclick="silModalAc(this)">
-                                  Sil
-                                </button>
-                              {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Kullanıcı Adı</th>
+                  <th>TC</th>
+                  <th>E-posta</th>
+                  {% if doktor_adi == "admin" %}
+                  <th>Şifre</th>
+                  <th>İşlem</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for kullanici in kullanicilar %}
+                <tr>
+                  <td>{{ kullanici[0] }}</td>
+                  <td>{{ kullanici[1] }}</td>
+                  <td>{{ kullanici[2] }}</td>
+                  <td>{{ kullanici[3] }}</td>
+                  {% if doktor_adi == "admin" %}
+                  <td>{{ kullanici[4] }}</td>
+                  <td>
+                    <button type="button" class="kullanici-btn" data-url="{{ url_for('kullanici_sil', kullanici_id=kullanici[0]) }}" onclick="silModalAc(this)">
+                        Sil
+                    </button>
+                  </td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
             </table>
         {% else %}
             <p>Kayıtlı kullanıcı bulunamadı.</p>

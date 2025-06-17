@@ -6,6 +6,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style_admin__randevular.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        tr[style*="background:#eee"] { pointer-events: none; opacity: 0.7; }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -16,7 +19,7 @@
       <ul class="navbar-links" id="navbarLinks">
         <li><a href="/">Anasayfa</a></li>
         <li><a href="/hekimler">Hekimler</a></li>
-        <li><a href="/kullanicilar">Hizmetler</a></li>
+        <li><a href="/hizmetler">Hizmetler</a></li>
       </ul>
     </nav>
     <div class="container" style="margin-top:72px;">
@@ -37,23 +40,18 @@
                 </thead>
                 <tbody>
                     {% for r in randevular %}
-                        <tr>
+                        <tr {% if r.recete_gonderildi %}style="background:#eee;color:#888;"{% endif %}>
                             <td>{{ r.hasta_adi }}</td>
                             <td>{{ r.klinik }}</td>
                             <td>{{ r.doktor }}</td>
                             <td>{{ r.tarih }}</td>
                             <td>{{ r.saat }}</td>
-                            {% if doktor_adi == "admin" %}
                             <td>
-                                <button 
-                                  type="button" 
-                                  class="kullanici-btn" 
-                                  data-url="{{ url_for('randevu_sil', randevu_id=r.id) }}" 
-                                  onclick="silModalAc(this)">
-                                  Sil
-                                </button>
+                              <button type="button" class="kullanici-btn" onclick="receteAc('{{ r.id }}', '{{ r.hasta_adi }}', '{{ r.klinik }}', '{{ r.tarih }}', '{{ r.saat }}')">Reçete Yaz</button>
+                              {% if doktor_adi == "admin" %}
+                              <button type="button" class="kullanici-btn" onclick="iptalModalAc(this)" data-url="/randevu_iptal/{{ r.id }}">İptal</button>
+                              {% endif %}
                             </td>
-                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -64,36 +62,58 @@
         <a class="back-link" href="{{ url_for('admin_panel') }}">← Panele Dön</a>
     </div>
 
-    <!-- Modal ve script -->
-    <div id="silModal" class="modal">
+    <!-- Sadece Reçete Modalı Kaldı -->
+    <div id="receteModal" class="modal">
       <div class="modal-content">
-        <span class="modal-close" onclick="modalKapat()">&times;</span>
-        <h2>Randevuyu Silmek İstiyor Musunuz?</h2>
+        <span class="modal-close" onclick="receteKapat()">&times;</span>
+        <h2>Reçete Yaz</h2>
+        <form id="receteForm" method="post" action="{{ url_for('recete_gonder') }}">
+          <input type="hidden" name="randevu_id" id="receteRandevuId">
+          <textarea name="recete_metni" id="receteMetni" rows="6" placeholder="İlaçları ve açıklamaları yazınız..." required></textarea>
+          <button type="submit" class="modal-btn evet">Onayla ve Gönder</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Sadece İptal Modalı -->
+    <div id="iptalModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(33,147,176,0.18); align-items:center; justify-content:center; z-index:9999;">
+      <div class="modal-content" style="background:white; padding:36px 32px; border-radius:18px; box-shadow:0 8px 32px #2193b040; text-align:center; min-width:300px; position:relative;">
+        <span class="modal-close" onclick="iptalModalKapat()" style="position:absolute; top:12px; right:18px; font-size:2rem; cursor:pointer;">×</span>
+        <h3 style="color:#2193b0; margin-bottom:18px;">Randevuyu İptal Etmek İstiyor Musunuz?</h3>
         <p>Bu işlemi geri alamazsınız.</p>
-        <form id="silForm" method="post">
-          <button type="submit" class="modal-btn evet">Evet</button>
-          <button type="button" class="modal-btn hayir" onclick="modalKapat()">Hayır</button>
+        <form id="iptalForm" method="post" action="">
+          <button type="submit" class="modal-action-btn sil">Evet</button>
+          <button type="button" class="modal-action-btn hayir" onclick="iptalModalKapat()">Hayır</button>
         </form>
       </div>
     </div>
 
     <script>
-    function silModalAc(btn) {
-        var url = btn.getAttribute('data-url');
-        document.getElementById('silForm').action = url;
-        document.getElementById('silModal').style.display = "flex";
-    }
-    function modalKapat() {
-        document.getElementById('silModal').style.display = "none";
-    }
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('silModal')) {
-            modalKapat();
-        }
-    }
     function toggleMenu() {
       var links = document.getElementById('navbarLinks');
       links.classList.toggle('open');
+    }
+    function receteAc(id, hasta, klinik, tarih, saat) {
+        document.getElementById('receteRandevuId').value = id;
+        document.getElementById('receteMetni').value = '';
+        document.getElementById('receteModal').style.display = "flex";
+    }
+    function receteKapat() {
+        document.getElementById('receteModal').style.display = "none";
+    }
+    function iptalModalAc(btn) {
+        var url = btn.getAttribute('data-url');
+        document.getElementById('iptalForm').action = url;
+        document.getElementById('iptalModal').style.display = "flex";
+    }
+    function iptalModalKapat() {
+        document.getElementById('iptalModal').style.display = "none";
+    }
+    window.onclick = function(event) {
+        var modal = document.getElementById('iptalModal');
+        if (event.target == modal) {
+            iptalModalKapat();
+        }
     }
     </script>
 </body>

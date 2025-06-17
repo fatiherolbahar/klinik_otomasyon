@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Kullanıcı Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='kullanici_panel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+      <div class="navbar-logo">
+        <span class="logo-text">Beykent Diş Polikliniği</span>
+      </div>
+      <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+      <ul class="navbar-links" id="navbarLinks">
+        <li><a href="/">Anasayfa</a></li>
+        <li><a href="/hekimler">Hekimler</a></li>
+        <li><a href="/hizmetler">Hizmetler</a></li>
+        <li><a href="/logout">Çıkış</a></li>
+      </ul>
+    </nav>
+    <div class="container" style="margin-top:72px;">
+        <h2>Hasta Profili</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages" id="flash-messages">
+              {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+            <script>
+              setTimeout(function() {
+                var flash = document.getElementById('flash-messages');
+                if(flash) flash.style.display = 'none';
+              }, 3000); // 3 saniye sonra kaybolur
+            </script>
+          {% endif %}
+        {% endwith %}
+        <div id="panelButonlar" class="panel-butonlar">
+            <a href="{{ url_for('kullanici_randevu') }}" class="panel-btn">Randevu Al</a>
+            <button class="panel-btn" onclick="toggleRandevular()">Randevularım</button>
+            <a href="/" class="kucuk-geri-btn">Geri</a>
+        </div>
+
+        <div id="randevularBolumu" style="display:none;">
+            <h3>Aktif Randevularım</h3>
+            <table>
+                <tr>
+                    <th>Klinik</th>
+                    <th>Doktor</th>
+                    <th>Tarih</th>
+                    <th>Saat</th>
+                    <th>İşlem</th>
+                </tr>
+                {% for r in aktif_randevular %}
+                <tr>
+                    <td>{{ r.klinik }}</td>
+                    <td>{{ r.doktor }}</td>
+                    <td>{{ r.tarih }}</td>
+                    <td>{{ r.saat }}</td>
+                    <td>
+                        <button type="button" class="iptal-btn" data-id="{{ r.id }}" onclick="iptalModalAc(this)">İptal Et</button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">Aktif randevunuz yok.</td></tr>
+                {% endfor %}
+            </table>
+
+            <h3 style="margin-top:32px;">Geçmiş Randevularım</h3>
+            <table>
+                <tr>
+                    <th>Klinik</th>
+                    <th>Doktor</th>
+                    <th>Tarih</th>
+                    <th>Saat</th>
+                </tr>
+                {% for r in gecmis_randevular %}
+                <tr>
+                    <td>{{ r.klinik }}</td>
+                    <td>{{ r.doktor }}</td>
+                    <td>{{ r.tarih }}</td>
+                    <td>{{ r.saat }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">Geçmiş randevunuz yok.</td></tr>
+                {% endfor %}
+            </table>
+
+            <!-- Geri tuşu sadece aşağıda -->
+            <button class="kucuk-geri-btn" onclick="geriDon()">Geri</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="iptalModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(33,147,176,0.18); align-items:center; justify-content:center; z-index:9999;">
+      <div class="modal-content" style="background:white; padding:36px 32px; border-radius:18px; box-shadow:0 8px 32px #2193b040; text-align:center; min-width:300px; position:relative;">
+        <span class="modal-close" onclick="iptalModalKapat()" style="position:absolute; top:12px; right:18px; font-size:2rem; cursor:pointer;">×</span>
+        <h3 style="color:#2193b0; margin-bottom:18px;">Randevuyu İptal Etmek İstiyor Musunuz?</h3>
+        <p>Bu işlemi geri alamazsınız.</p>
+        <form id="iptalForm" method="post" action="/randevu_iptal/24">
+          <button type="submit" class="modal-action-btn evet">Evet</button>
+          <button type="button" class="modal-action-btn hayir" onclick="iptalModalKapat()">Hayır</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+    function toggleRandevular() {
+        document.getElementById('panelButonlar').style.display = 'none';
+        document.getElementById('randevularBolumu').style.display = 'block';
+    }
+    function geriDon() {
+        document.getElementById('randevularBolumu').style.display = 'none';
+        document.getElementById('panelButonlar').style.display = 'flex';
+    }
+
+    // Sayfa yüklenince URL'de ?randevular=1 varsa randevular bölümünü aç
+    window.onload = function() {
+        if (window.location.search.includes('randevular=1')) {
+            toggleRandevular();
+        }
+    };
+
+    function iptalModalAc(btn) {
+        var randevuId = btn.getAttribute('data-id');
+        var form = document.getElementById('iptalForm');
+        form.action = "/randevu_iptal/" + randevuId;
+        document.getElementById('iptalModal').style.display = "flex";
+    }
+    function iptalModalKapat() {
+        document.getElementById('iptalModal').style.display = "none";
+    }
+    // Modal dışında tıklayınca kapansın
+    window.onclick = function(event) {
+        var modal = document.getElementById('iptalModal');
+        if (event.target == modal) {
+            iptalModalKapat();
+        }
+    }
+    </script>
+</body>
+</html>

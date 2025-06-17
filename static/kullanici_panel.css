@@ -1,0 +1,308 @@
+/* GENEL */
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* CONTAINER */
+.container {
+    background: rgba(255,255,255,0.97);
+    max-width: 900px;
+    margin: 48px auto 32px auto;
+    padding: 48px 36px 36px 36px;
+    border-radius: 22px;
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* BAŞLIK */
+h2 {
+    color: #2193b0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+}
+
+h3 {
+    color: #357abd;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 32px 0 16px 0;
+    letter-spacing: 0.5px;
+}
+
+/* FLASH MESAJLAR */
+.flash-messages {
+    color: #e74c3c;
+    margin-bottom: 10px;
+    font-weight: 600;
+    z-index: 1;
+    position: relative;
+}
+
+.flash-messages .success {
+    color: #218838;
+    background: #e6f9ec;
+    border-radius: 8px;
+    padding: 10px 0;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* FORM */
+form {
+    margin-bottom: 32px;
+}
+
+label {
+    display: block;
+    color: #2193b0;
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1.5px solid #b5d0e6;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: #f7fafd;
+    transition: border 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #2193b0;
+    outline: none;
+}
+
+button, .panel-btn {
+    display: inline-block;
+    padding: 24px 54px;      /* Yüksekliği ve genişliği artırıldı */
+    border-radius: 12px;
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.30rem;      /* Yazı boyutu büyütüldü */
+    box-shadow: 0 2px 12px rgba(33,147,176,0.10);
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    margin-top: 8px;
+}
+button:hover, .panel-btn:hover {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Küçük iptal butonu */
+.iptal-btn {
+    padding: 6px 16px;
+    font-size: 0.95rem;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #e74c3c 0%, #ffb3b3 100%);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(231,76,60,0.10);
+    margin: 0;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+}
+.iptal-btn:hover {
+    background: linear-gradient(90deg, #ffb3b3 0%, #e74c3c 100%);
+    transform: scale(1.04);
+}
+
+/* Modal içindeki Evet ve Hayır butonları eşit ve orantılı */
+.modal-action-btn {
+    padding: 14px 38px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    margin: 0 8px;
+    min-width: 120px;
+    display: inline-block;
+    box-sizing: border-box;
+    transition: background 0.2s, transform 0.15s;
+}
+.modal-action-btn.evet {
+    background: linear-gradient(90deg, #28a745 0%, #6fdc8c 100%);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(40,167,69,0.10);
+}
+.modal-action-btn.evet:hover {
+    background: linear-gradient(90deg, #6fdc8c 0%, #28a745 100%);
+    transform: scale(1.04);
+}
+.modal-action-btn.hayir {
+    background: linear-gradient(90deg, #e74c3c 0%, #ffb3b3 100%);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(231,76,60,0.10);
+}
+.modal-action-btn.hayir:hover {
+    background: linear-gradient(90deg, #ffb3b3 0%, #e74c3c 100%);
+    transform: scale(1.04);
+}
+
+/* TABLOLAR */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0 32px 0;
+    background: #f7fafd;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(33,147,176,0.06);
+}
+
+th, td {
+    padding: 14px 10px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+th {
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+    background: #eaf6fb;
+}
+
+tr:nth-child(odd) {
+    background: #f7fafd;
+}
+
+tr.no-data td {
+    color: #aaa;
+    font-style: italic;
+    background: #f7fafd;
+}
+
+/* Butonlar */
+.panel-butonlar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 32px;
+}
+
+/* Büyük butonlar */
+.panel-btn {
+    width: 260px;
+    max-width: 90vw;
+    justify-content: center;
+    min-height: 54px;
+    font-size: 1.18rem;
+    padding: 0 0;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 2px 12px rgba(33,147,176,0.10);
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel-btn:hover {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Küçük geri butonu */
+.kucuk-geri-btn {
+    width: 120px;
+    max-width: 60vw;
+    min-height: 40px;
+    font-size: 1rem;
+    padding: 0 0;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 1px 4px rgba(33,147,176,0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kucuk-geri-btn:hover {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    transform: scale(1.04);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .container {
+        padding: 18px 2vw;
+        max-width: 99vw;
+    }
+    table, th, td {
+        font-size: 0.98rem;
+    }
+    h2 {
+        font-size: 1.3rem;
+    }
+    h3 {
+        font-size: 1.05rem;
+    }
+    button, .panel-btn {
+        font-size: 1rem;
+        padding: 12px 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px 1vw;
+    }
+    table, th, td {
+        font-size: 0.92rem;
+        padding: 8px 4px;
+    }
+    h2 {
+        font-size: 1.1rem;
+    }
+    h3 {
+        font-size: 0.98rem;
+    }
+    button, .panel-btn {
+        font-size: 0.95rem;
+        padding: 10px 8px;
+    }
+}
+
+/* Yeni Buton Sınıfı */
+.panel-main-btn {
+    min-width: 220px;
+    min-height: 64px;
+    font-size: 1.25rem;
+    padding: 18px 0;
+    margin: 0;
+}

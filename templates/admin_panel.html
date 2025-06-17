@@ -16,10 +16,10 @@
       <ul class="navbar-links" id="navbarLinks">
         <li><a href="/">Anasayfa</a></li>
         <li><a href="/hekimler">Hekimler</a></li>
-        <li><a href="/kullanicilar">Hizmetler</a></li>
+        <li><a href="/hizmetler">Hizmetler</a></li>
     </nav>
     <div class="container" style="margin-top:72px;">
-        <h1>Doktor Paneli</h1>
+        <h1>Beykent Diş Polikliniği Doktor Paneli</h1>
         <div style="margin-bottom: 30px; color: #357abd; font-weight: 600;">
             Hoş geldiniz, {{ doktor_adi if doktor_adi else "Doktor" }}!
         </div>
@@ -28,6 +28,7 @@
             <a href="/kullanicilar" class="panel-btn">Hasta Listesi</a>
             <a href="/logout" class="panel-btn" style="background: #e74c3c; color: #fff;">Çıkış Yap</a>
         </div>
+        
     </div>
     <script>
     function toggleMenu() {

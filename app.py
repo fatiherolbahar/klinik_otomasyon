@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
-from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from datetime import datetime, timedelta
 import pytz
 import sqlite3
 import random
@@ -19,12 +19,15 @@ ssl._create_default_https_context = ssl._create_unverified_context
 def veritabani_baglanti():
     return sqlite3.connect("user.db")
 
-def kullanici_var_mi(kullanici_adi, tc):
+def kullanici_var_mi(kullanici_adi, tc, eposta=None):
     if not kullanici_adi or not tc:
         return None
     conn = veritabani_baglanti()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM kullanicilar WHERE kullanici_adi=? AND tc=?", (kullanici_adi, tc))
+    if eposta:
+        cursor.execute("SELECT * FROM kullanicilar WHERE (kullanici_adi=? AND tc=?) OR eposta=?", (kullanici_adi, tc, eposta))
+    else:
+        cursor.execute("SELECT * FROM kullanicilar WHERE kullanici_adi=? AND tc=?", (kullanici_adi, tc))
     user = cursor.fetchone()
     conn.close()
     return user
@@ -32,7 +35,10 @@ def kullanici_var_mi(kullanici_adi, tc):
 def kullanici_dogrula(kullanici_adi, tc, sifre):
     conn = veritabani_baglanti()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM kullanicilar WHERE kullanici_adi=? AND tc=? AND sifre=?", (kullanici_adi, tc, sifre))
+    cursor.execute(
+        "SELECT * FROM kullanicilar WHERE kullanici_adi=? AND tc=? AND sifre=?",
+        (kullanici_adi, tc, sifre)
+    )
     user = cursor.fetchone()
     conn.close()
     return user
@@ -109,31 +115,84 @@ def kullanici_login():
         user = kullanici_dogrula(kullanici_adi, tc, sifre)
         if user:
             session["kullanici_adi"] = kullanici_adi
-            return redirect(url_for("kullanici_randevu"))
-        flash("Hatalı kullanıcı adı, TC veya şifre!")
+            return redirect(url_for("kullanici_panel"))
+        flash("Hatalı kullanıcı adı, TC veya şifre!", "danger")
     return render_template("kullanici_login.html")
 
-@app.route("/kullanici_randevu", methods=["GET", "POST"])
-def kullanici_randevu():
-    turkiye_saati = datetime.now(pytz.timezone("Europe/Istanbul")).date().isoformat()
+@app.route("/kullanici_panel", methods=["GET", "POST"])
+def kullanici_panel():
+    if "kullanici_adi" not in session:
+        return redirect(url_for("kullanici_login"))
+    kullanici_adi = session["kullanici_adi"]
+    istanbul_saati = datetime.now(pytz.timezone("Europe/Istanbul"))
+    bugun = istanbul_saati.date().isoformat()
+    min_tarih = bugun
+    if istanbul_saati.time() >= datetime.strptime("17:00", "%H:%M").time():
+        min_tarih = (istanbul_saati + timedelta(days=1)).date().isoformat()
+
+    # Randevu alma işlemi
     if request.method == "POST":
         klinik = request.form.get("klinik")
         doktor = request.form.get("doktor")
         tarih = request.form.get("tarih")
-        saat = request.form.get("saat")
+        saat_randevu = request.form.get("saat")
         hasta_adi = session.get("kullanici_adi", "Bilinmeyen")
-        # --- BURASI GÜNCELLENDİ ---
+
+        # Eğer seçilen tarih min_tarih'ten küçükse randevuya izin verme
+        if tarih < min_tarih:
+            flash("Saat 17:00'den sonra bugüne randevu alınamaz, lütfen ileri bir tarih seçin!", "danger")
+            return render_template("kullanici_panel.html", current_date=bugun, min_tarih=min_tarih)
+
         conn = sqlite3.connect("user.db")
         cursor = conn.cursor()
+        # 1) Aynı hasta aynı gün aynı doktordan randevu alamaz
+        cursor.execute(
+            "SELECT COUNT(*) FROM randevular WHERE hasta_adi=? AND doktor=? AND tarih=?",
+            (hasta_adi, doktor, tarih)
+        )
+        if cursor.fetchone()[0] > 0:
+            conn.close()
+            flash("Aynı gün aynı doktordan birden fazla randevu alamazsınız!", "danger")
+            return render_template("kullanici_panel.html", current_date=bugun, min_tarih=min_tarih)
+
+        # 2) Aynı gün aynı doktor ve aynı saatte başka bir hasta randevu alamaz
+        cursor.execute(
+            "SELECT COUNT(*) FROM randevular WHERE doktor=? AND tarih=? AND saat=?",
+            (doktor, tarih, saat_randevu)
+        )
+        if cursor.fetchone()[0] > 0:
+            conn.close()
+            flash("Bu doktorun bu saatte başka bir randevusu var!", "danger")
+            return render_template("kullanici_panel.html", current_date=bugun, min_tarih=min_tarih)
+
+        # Randevu oluştur
         cursor.execute(
             "INSERT INTO randevular (hasta_adi, klinik, doktor, tarih, saat) VALUES (?, ?, ?, ?, ?)",
-            (hasta_adi, klinik, doktor, tarih, saat)
+            (hasta_adi, klinik, doktor, tarih, saat_randevu)
         )
         conn.commit()
         conn.close()
         flash("Randevunuz başarıyla oluşturuldu!", "success")
-        return render_template("kullanici_randevu.html", current_date=turkiye_saati, success=True)
-    return render_template("kullanici_randevu.html", current_date=turkiye_saati)
+        return render_template("kullanici_panel.html", current_date=bugun, min_tarih=min_tarih, success=True)
+
+    # Randevuları çek
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, klinik, doktor, tarih, saat FROM randevular WHERE hasta_adi=? ORDER BY tarih DESC, saat DESC", (kullanici_adi,))
+    randevular = [
+        {"id": row[0], "klinik": row[1], "doktor": row[2], "tarih": row[3], "saat": row[4]}
+        for row in cursor.fetchall()
+    ]
+    conn.close()
+    aktif_randevular = [r for r in randevular if r["tarih"] >= bugun]
+    gecmis_randevular = [r for r in randevular if r["tarih"] < bugun]
+    return render_template(
+        "kullanici_panel.html",
+        aktif_randevular=aktif_randevular,
+        gecmis_randevular=gecmis_randevular,
+        current_date=bugun,
+        min_tarih=min_tarih
+    )
 
 @app.route("/kayit_ol", methods=["GET", "POST"])
 def kayit_ol():
@@ -147,8 +206,8 @@ def kayit_ol():
             flash("Tüm alanları doldurmalısınız!", "danger")
             return redirect(url_for("kayit_ol"))
         kullanici_adi = f"{isim} {soyisim}"
-        if kullanici_var_mi(kullanici_adi, tc):
-            flash("Bu kullanıcı adı ve TC ile zaten kayıtlı!", "danger")
+        if kullanici_var_mi(kullanici_adi, tc, eposta):
+            flash("Bu kullanıcı adı, TC veya e-posta ile zaten kayıtlı!", "danger")
             return redirect(url_for("kayit_ol"))
         kullanici_ekle(kullanici_adi, tc, eposta, sifre)
         flash("Kayıt başarılı! Giriş yapabilirsiniz.", "success")
@@ -168,9 +227,12 @@ def admin_randevular():
     conn = sqlite3.connect("user.db")
     cursor = conn.cursor()
     if doktor_adi == "admin":
+        # Tüm randevuları getir
         cursor.execute("SELECT id, hasta_adi, klinik, doktor, tarih, saat FROM randevular")
     else:
-        cursor.execute("SELECT id, hasta_adi, klinik, doktor, tarih, saat FROM randevular WHERE doktor = ?", (doktor_adi,))
+        # Sadece o doktorun bugünkü randevuları
+        bugun = datetime.now(pytz.timezone("Europe/Istanbul")).date().isoformat()
+        cursor.execute("SELECT id, hasta_adi, klinik, doktor, tarih, saat FROM randevular WHERE doktor = ? AND tarih=?", (doktor_adi, bugun))
     randevular = [
         {
             "id": row[0],
@@ -298,6 +360,175 @@ def randevu_sil(randevu_id):
 @app.route("/hekimler")
 def hekimler():
     return render_template("hekimler.html")
+
+@app.route("/hizmetler")
+def hizmetler():
+    return render_template("hizmetler.html")
+
+@app.route("/api/dolu_saatler", methods=["GET"])
+def dolu_saatler():
+    doktor = request.args.get("doktor")
+    tarih = request.args.get("tarih")
+    if not doktor or not tarih:
+        return jsonify([])
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT saat FROM randevular WHERE doktor=? AND tarih=?",
+        (doktor, tarih)
+    )
+    saatler = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return jsonify(saatler)
+
+@app.route('/recete_gonder', methods=['POST'])
+def recete_gonder():
+    if not session.get("admin"):
+        return redirect(url_for("admin_login"))
+    randevu_id = request.form.get("randevu_id")
+    recete_metni = request.form.get("recete_metni")
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT hasta_adi FROM randevular WHERE id=?", (randevu_id,))
+    hasta_adi = cursor.fetchone()[0]
+    cursor.execute("SELECT eposta FROM kullanicilar WHERE kullanici_adi=?", (hasta_adi,))
+    result = cursor.fetchone()
+    if not result:
+        conn.close()
+        flash("Hastanın e-posta adresi bulunamadı!", "danger")
+        return redirect(url_for("admin_randevular"))
+    eposta = result[0]
+    cursor.execute("UPDATE randevular SET recete_metni=?, recete_gonderildi=1 WHERE id=?", (recete_metni, randevu_id))
+    conn.commit()
+    conn.close()
+    # Reçete mailini gönder
+    recete_mail_gonder(eposta, hasta_adi, recete_metni)
+    flash("Reçete başarıyla gönderildi!", "success")
+    return redirect(url_for("admin_randevular"))
+
+def recete_mail_gonder(eposta, hasta_adi, recete_metni):
+    try:
+        message = Mail(
+            from_email='baharfatih043@gmail.com',  # Kendi mail adresin
+            to_emails=eposta,
+            subject='Diş Kliniği | Elektronik Reçeteniz',
+            html_content=f'''
+                <p>Sayın <b>{hasta_adi}</b>,</p>
+                <p>Doktorunuz tarafından oluşturulan elektronik reçeteniz aşağıdadır:</p>
+                <div style="border:1px solid #2193b0; border-radius:8px; padding:16px; background:#f7fafd; margin:18px 0;">
+                    {recete_metni.replace('\n', '<br>')}
+                </div>
+                <p>Geçmiş olsun.</p>
+                <br>
+                <p><em>Beykent Diş Polikliniği</em></p>
+            '''
+        )
+        api_key = os.environ.get("SENDGRID_API_KEY")
+        sg = SendGridAPIClient(api_key)
+        response = sg.send(message)
+        print(f"Reçete maili gönderildi! Status code: {response.status_code}")
+        return True
+    except Exception as e:
+        print(f"Reçete maili gönderilemedi: {e}")
+        return False
+
+@app.route("/kullanici_randevu", methods=["GET", "POST"])
+def kullanici_randevu():
+    if "kullanici_adi" not in session:
+        return redirect(url_for("kullanici_login"))
+    kullanici_adi = session["kullanici_adi"]
+    istanbul_saati = datetime.now(pytz.timezone("Europe/Istanbul"))
+    bugun = istanbul_saati.date().isoformat()
+    min_tarih = bugun
+    if istanbul_saati.time() >= datetime.strptime("17:00", "%H:%M").time():
+        min_tarih = (istanbul_saati + timedelta(days=1)).date().isoformat()
+
+    # Randevu alma işlemi
+    if request.method == "POST":
+        klinik = request.form.get("klinik")
+        doktor = request.form.get("doktor")
+        tarih = request.form.get("tarih")
+        saat_randevu = request.form.get("saat")
+        hasta_adi = session.get("kullanici_adi", "Bilinmeyen")
+
+        # Eğer seçilen tarih min_tarih'ten küçükse randevuya izin verme
+        if tarih < min_tarih:
+            flash("Saat 17:00'den sonra bugüne randevu alınamaz, lütfen ileri bir tarih seçin!", "danger")
+            return render_template("kullanici_randevu.html", current_date=bugun, min_tarih=min_tarih)
+
+        conn = sqlite3.connect("user.db")
+        cursor = conn.cursor()
+        # 1) Aynı hasta aynı gün aynı doktordan randevu alamaz
+        cursor.execute(
+            "SELECT COUNT(*) FROM randevular WHERE hasta_adi=? AND doktor=? AND tarih=?",
+            (hasta_adi, doktor, tarih)
+        )
+        if cursor.fetchone()[0] > 0:
+            conn.close()
+            flash("Aynı gün aynı doktordan birden fazla randevu alamazsınız!", "danger")
+            return render_template("kullanici_randevu.html", current_date=bugun, min_tarih=min_tarih)
+
+        # 2) Aynı gün aynı doktor ve aynı saatte başka bir hasta randevu alamaz
+        cursor.execute(
+            "SELECT COUNT(*) FROM randevular WHERE doktor=? AND tarih=? AND saat=?",
+            (doktor, tarih, saat_randevu)
+        )
+        if cursor.fetchone()[0] > 0:
+            conn.close()
+            flash("Bu doktorun bu saatte başka bir randevusu var!", "danger")
+            return render_template("kullanici_randevu.html", current_date=bugun, min_tarih=min_tarih)
+
+        # Randevu oluştur
+        cursor.execute(
+            "INSERT INTO randevular (hasta_adi, klinik, doktor, tarih, saat) VALUES (?, ?, ?, ?, ?)",
+            (hasta_adi, klinik, doktor, tarih, saat_randevu)
+        )
+        conn.commit()
+        conn.close()
+        flash("Randevunuz başarıyla oluşturuldu!", "success")
+        return render_template("kullanici_randevu.html", current_date=bugun, min_tarih=min_tarih, success=True)
+
+    # Randevuları çek
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, klinik, doktor, tarih, saat FROM randevular WHERE hasta_adi=? ORDER BY tarih DESC, saat DESC", (kullanici_adi,))
+    randevular = [
+        {"id": row[0], "klinik": row[1], "doktor": row[2], "tarih": row[3], "saat": row[4]}
+        for row in cursor.fetchall()
+    ]
+    conn.close()
+    aktif_randevular = [r for r in randevular if r["tarih"] >= bugun]
+    gecmis_randevular = [r for r in randevular if r["tarih"] < bugun]
+    return render_template(
+        "kullanici_randevu.html",
+        aktif_randevular=aktif_randevular,
+        gecmis_randevular=gecmis_randevular,
+        current_date=bugun,
+        min_tarih=min_tarih
+    )
+
+@app.route("/randevu_iptal/<int:randevu_id>", methods=["POST"])
+def randevu_iptal(randevu_id):
+    if "admin" in session and session["admin"]:
+        # Admin ise admin randevu listesine dön
+        conn = sqlite3.connect("user.db")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM randevular WHERE id=?", (randevu_id,))
+        conn.commit()
+        conn.close()
+        flash("Randevu başarıyla silindi.", "success")
+        return redirect(url_for("admin_randevular"))
+    elif "kullanici_adi" in session:
+        # Kullanıcı ise kendi paneline dön
+        conn = sqlite3.connect("user.db")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM randevular WHERE id=? AND hasta_adi=?", (randevu_id, session["kullanici_adi"]))
+        conn.commit()
+        conn.close()
+        flash("Randevunuz başarıyla iptal edildi.", "success")
+        return redirect(url_for("kullanici_panel"))
+    else:
+        return redirect(url_for("kullanici_login"))
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

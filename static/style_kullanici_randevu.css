@@ -121,9 +121,13 @@ button:hover {
 }
 
 .flash-messages {
-    list-style: none;
+    color: #e74c3c;
+    margin-bottom: 10px;
+    list-style-type: none;
     padding: 0;
-    margin-bottom: 18px;
+    font-weight: 600;
+    z-index: 1;
+    position: relative;
 }
 .flash-messages .success {
     color: #2193b0;
@@ -131,6 +135,11 @@ button:hover {
     border-radius: 8px;
     padding: 10px 0;
     font-weight: 600;
+}
+
+#saat option:disabled {
+    color: #bbb;
+    background: #f5f5f5;
 }
 
 @media (max-width: 700px) {

@@ -181,10 +181,10 @@ body {
     position: relative;
 }
 .doktor-kart p {
-    color: #357abd;
+    color:#0a0c76;
     font-size: 1rem;
     margin: 0;
-    font-weight: 600;
+    font-weight: 900;   
     text-align: center;
     z-index: 1;
     position: relative;

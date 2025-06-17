@@ -16,11 +16,22 @@
       <ul class="navbar-links" id="navbarLinks">
         <li><a href="/">Anasayfa</a></li>
         <li><a href="/hekimler">Hekimler</a></li>
-        <li><a href="/kullanicilar">Hizmetler</a></li>
+        <li><a href="/hizmetler">Hizmetler</a></li>
       </ul>
     </nav>
     <div class="container" style="margin-top:72px;">
         <h2>Randevu Al</h2>
+        <div class="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% if category != 'success' %}
+            <div class="{{ category }}">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
         <form method="POST" action="/kullanici_randevu">
             <label for="klinik">Klinik</label>
             <select id="klinik" name="klinik" required>
@@ -62,7 +73,7 @@
 
             <button type="submit">Randevu Oluştur</button>
         </form>
-        <a class="back-link" href="/kullanici">← Geri Dön</a>
+        <a class="back-link" href="/kullanici_panel">← Geri Dön</a>
     </div>
 
     {% if success %}
@@ -71,20 +82,22 @@
         <div style="background:white; padding:36px 32px; border-radius:18px; box-shadow:0 8px 32px #2193b040; text-align:center; min-width:300px;">
             <h3 style="color:#2193b0; margin-bottom:18px;">Randevu Başarıyla Oluşturuldu!</h3>
             <button type="button"
-    id="modal-ok"
-    style="margin-top:18px; padding:12px 32px; border:none; border-radius:8px;
-    background:linear-gradient(90deg,#2193b0 0%,#6dd5ed 100%);
-    color:white; font-weight:600; font-size:1.1rem; cursor:pointer;">
-    Tamam
-</button>
-<script>
-    document.getElementById("modal-ok").onclick = function() {
-        window.location.href = "{{ url_for('index') }}";
-    }
-</script>
+                id="modal-ok"
+                style="margin-top:18px; padding:12px 32px; border:none; border-radius:8px;
+                background:linear-gradient(90deg,#2193b0 0%,#6dd5ed 100%);
+                color:white; font-weight:600; font-size:1.1rem; cursor:pointer;">
+                Tamam
+            </button>
+            <script>
+                document.getElementById("modal-ok").onclick = function() {
+                    window.location.href = "{{ url_for('kullanici_panel') }}";
+                }
+            </script>
         </div>
     </div>
     {% endif %}
+  </div>
+</div>
 
     <script>
         // Kliniklere göre doktorlar
@@ -140,19 +153,26 @@
             });
 
             tarihInput.addEventListener("change", function() {
-                // Tarih seçildiyse saat aktif et
-                if (tarihInput.value) {
+                if (tarihInput.value && doktorSelect.value) {
                     saatSelect.disabled = false;
+                    // Tüm saatleri önce aktif et
+                    Array.from(saatSelect.options).forEach(opt => opt.disabled = false);
+
+                    // AJAX ile dolu saatleri al
+                    fetch(`/api/dolu_saatler?doktor=${encodeURIComponent(doktorSelect.value)}&tarih=${encodeURIComponent(tarihInput.value)}`)
+                    .then(resp => resp.json())
+                    .then(doluSaatler => {
+                        Array.from(saatSelect.options).forEach(opt => {
+                            if (doluSaatler.includes(opt.value)) {
+                                opt.disabled = true;
+                            }
+                        });
+                    });
                 } else {
                     saatSelect.selectedIndex = 0;
                     saatSelect.disabled = true;
                 }
             });
-        }
-
-        function toggleMenu() {
-          var links = document.getElementById('navbarLinks');
-          links.classList.toggle('open');
         }
     </script>
 </body>

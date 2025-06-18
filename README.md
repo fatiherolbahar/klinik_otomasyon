@@ -10,10 +10,10 @@ klinik otomasyonu
 // flask run veya python3 app.py 
 
 
-// export SENDGRID_API_KEY='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' 
+// export SENDGRID_API_KEY= API KEY yazan dosyada API key mevcut onunla beraber bu kodu girip çalıştırmalısınız
 
 ardından 
-           python app.py veya pyhton3 app.py
+           pythonapp.py veya python3 app.pyß
 
 
 // tarayıcıdan http://127.0.0.1:5000/ adresine gidiyoruz

@@ -124,6 +124,10 @@ def kullanici_panel():
     if "kullanici_adi" not in session:
         return redirect(url_for("kullanici_login"))
     kullanici_adi = session["kullanici_adi"]
+
+    # --- GEÇMİŞ RANDEVULARI ARŞİVLE ---
+    arsivle_gecmis_randevular(kullanici_adi)
+
     istanbul_saati = datetime.now(pytz.timezone("Europe/Istanbul"))
     bugun = istanbul_saati.date().isoformat()
     min_tarih = bugun
@@ -186,6 +190,19 @@ def kullanici_panel():
     conn.close()
     aktif_randevular = [r for r in randevular if r["tarih"] >= bugun]
     gecmis_randevular = [r for r in randevular if r["tarih"] < bugun]
+    # Geçmiş randevuları çek
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    bir_yil_once = (datetime.now(pytz.timezone("Europe/Istanbul")) - timedelta(days=365)).date().isoformat()
+    cursor.execute(
+        "SELECT klinik, doktor, tarih, saat FROM gecmis_randevular WHERE hasta_adi=? AND tarih >= ? ORDER BY tarih DESC, saat DESC",
+        (kullanici_adi, bir_yil_once)
+    )
+    gecmis_randevular = [
+        {"klinik": row[0], "doktor": row[1], "tarih": row[2], "saat": row[3]}
+        for row in cursor.fetchall()
+    ]
+    conn.close()
     return render_template(
         "kullanici_panel.html",
         aktif_randevular=aktif_randevular,
@@ -259,7 +276,7 @@ def kod_gonder(eposta, kod):
                 <h2 style="color:#007BFF;">{kod}</h2>
                 <p>Kod 5 dakika geçerlidir. Eğer bu talebi siz yapmadıysanız, lütfen bu mesajı dikkate almayınız.</p>
                 <br>
-                <p><em>Diş Kliniği Otomasyon Sistemi</em></p>
+                <p><em>Beykent Diş Polikliniği</em></p>
             '''
         )
         api_key = os.environ.get("SENDGRID_API_KEY")
@@ -499,6 +516,19 @@ def kullanici_randevu():
     conn.close()
     aktif_randevular = [r for r in randevular if r["tarih"] >= bugun]
     gecmis_randevular = [r for r in randevular if r["tarih"] < bugun]
+    # Geçmiş randevuları çek
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    bir_yil_once = (datetime.now(pytz.timezone("Europe/Istanbul")) - timedelta(days=365)).date().isoformat()
+    cursor.execute(
+        "SELECT klinik, doktor, tarih, saat FROM gecmis_randevular WHERE hasta_adi=? AND tarih >= ? ORDER BY tarih DESC, saat DESC",
+        (kullanici_adi, bir_yil_once)
+    )
+    gecmis_randevular = [
+        {"klinik": row[0], "doktor": row[1], "tarih": row[2], "saat": row[3]}
+        for row in cursor.fetchall()
+    ]
+    conn.close()
     return render_template(
         "kullanici_randevu.html",
         aktif_randevular=aktif_randevular,
@@ -529,6 +559,28 @@ def randevu_iptal(randevu_id):
         return redirect(url_for("kullanici_panel"))
     else:
         return redirect(url_for("kullanici_login"))
+
+def arsivle_gecmis_randevular(kullanici_adi):
+    now = datetime.now(pytz.timezone("Europe/Istanbul"))
+    bugun = now.date().isoformat()
+    saat = now.strftime("%H:%M")
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    # Geçmiş randevuları bul
+    cursor.execute(
+        "SELECT id, klinik, doktor, tarih, saat FROM randevular WHERE hasta_adi=? AND (tarih < ? OR (tarih = ? AND saat < ?))",
+        (kullanici_adi, bugun, bugun, saat)
+    )
+    gecmisler = cursor.fetchall()
+    # Arşivle ve sil
+    for row in gecmisler:
+        cursor.execute(
+            "INSERT INTO gecmis_randevular (hasta_adi, klinik, doktor, tarih, saat) VALUES (?, ?, ?, ?, ?)",
+            (kullanici_adi, row[1], row[2], row[3], row[4])
+        )
+        cursor.execute("DELETE FROM randevular WHERE id=?", (row[0],))
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

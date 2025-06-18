@@ -33,7 +33,7 @@
                         <th>Doktor</th>
                         <th>Tarih</th>
                         <th>Saat</th>
-                        {% if doktor_adi == "admin" %}
+                        {% if doktor_adi == "admin" or doktor_adi %}
                         <th>İşlem</th>
                         {% endif %}
                     </tr>
@@ -47,9 +47,11 @@
                             <td>{{ r.tarih }}</td>
                             <td>{{ r.saat }}</td>
                             <td>
+                              {% if doktor_adi == "admin" or doktor_adi %}
                               <button type="button" class="kullanici-btn" onclick="receteAc('{{ r.id }}', '{{ r.hasta_adi }}', '{{ r.klinik }}', '{{ r.tarih }}', '{{ r.saat }}')">Reçete Yaz</button>
                               {% if doktor_adi == "admin" %}
                               <button type="button" class="kullanici-btn" onclick="iptalModalAc(this)" data-url="/randevu_iptal/{{ r.id }}">İptal</button>
+                              {% endif %}
                               {% endif %}
                             </td>
                         </tr>

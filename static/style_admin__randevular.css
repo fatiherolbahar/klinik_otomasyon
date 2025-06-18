@@ -125,19 +125,37 @@ tr:hover {
     transition: background 0.2s, transform 0.2s;
 }
 .modal-btn.evet {
-    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
-    color: #fff;
+    background: linear-gradient(90deg, #28a745 0%, #6fdc8c 100%) !important;
+    color: #fff !important;
+    padding: 14px 38px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    margin: 0 8px;
+    min-width: 120px;
+    transition: background 0.2s, transform 0.15s;
 }
 .modal-btn.evet:hover {
-    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    background: linear-gradient(90deg, #6fdc8c 0%, #28a745 100%) !important;
     transform: scale(1.04);
 }
 .modal-btn.hayir {
-    background: #e0eafc;
-    color: #2193b0;
+    background: linear-gradient(90deg, #e74c3c 0%, #ffb3b3 100%) !important;
+    color: #fff !important;
+    padding: 14px 38px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    margin: 0 8px;
+    min-width: 120px;
+    transition: background 0.2s, transform 0.15s;
 }
 .modal-btn.hayir:hover {
-    background: #cfdef3;
+    background: linear-gradient(90deg, #ffb3b3 0%, #e74c3c 100%) !important;
     transform: scale(1.04);
 }
 .modal-close {
@@ -165,8 +183,8 @@ tr:hover {
     transform: scale(1.04);
 }
 .modal-action-btn.hayir {
-    background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
-    color: #fff;
+    background: linear-gradient(90deg, #28a745 0%, #6fdc8c 100%) !important;
+    color: #fff !important;
     padding: 14px 38px;
     font-size: 1.1rem;
     border-radius: 8px;
@@ -178,7 +196,7 @@ tr:hover {
     transition: background 0.2s, transform 0.15s;
 }
 .modal-action-btn.hayir:hover {
-    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    background: linear-gradient(90deg, #6fdc8c 0%, #28a745 100%) !important;
     transform: scale(1.04);
 }
 @media (max-width: 700px) {

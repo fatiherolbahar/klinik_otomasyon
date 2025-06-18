@@ -30,7 +30,7 @@
                 <li class="{{ category }}">{{ mesaj }}</li>
               {% endfor %}
             </ul>
-          {% endif %}
+          {% endif %} 
         {% endwith %}
 
         <form method="POST" action="/kullanici">
@@ -38,7 +38,7 @@
             <input type="text" id="kullanici_adi" placeholder="İsim Soyisim" name="kullanici_adi" required>
 
             <label for="tc">TC Kimlik No</label>
-            <input type="text" id="tc" placeholder="Tc Kimlik No"  name="tc" required>
+            <input type="text" id="tc" placeholder="Tc Kimlik No" name="tc" required maxlength="11" pattern="\d{11}" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
 
             <label for="sifre">Şifre</label>
             <input type="password" id="sifre" placeholder="Şifre" name="sifre" required>

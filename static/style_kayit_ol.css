@@ -134,3 +134,22 @@ button:hover {
         font-size: 1.1rem;
     }
 }
+<script>
+document.getElementById('sifre').addEventListener('input', function() {
+    var sifreInput = this;
+    var mevcutUyari = document.getElementById('sifre-uyari');
+    if (sifreInput.value.length > 0 && sifreInput.value.length < 8) {
+        if (!mevcutUyari) {
+            var uyari = document.createElement('div');
+            uyari.id = 'sifre-uyari';
+            uyari.style.color = '#e74c3c';
+            uyari.style.fontSize = '0.98rem';
+            uyari.style.marginTop = '6px';
+            uyari.textContent = 'Şifre en az 8 karakter olmalı!';
+            sifreInput.parentNode.insertBefore(uyari, sifreInput.nextSibling);
+        }
+    } else if (mevcutUyari) {
+        mevcutUyari.remove();
+    }
+});
+</script>

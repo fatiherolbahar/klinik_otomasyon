@@ -1,0 +1,21 @@
+import sqlite3
+
+def arsivle_gecmis_randevular():
+    conn = sqlite3.connect("user.db")
+    cursor = conn.cursor()
+    # Diğer tabloların CREATE TABLE komutları...
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS gecmis_randevular (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        hasta_adi TEXT,
+        klinik TEXT,
+        doktor TEXT,
+        tarih TEXT,
+        saat TEXT
+    );
+    """)
+    conn.commit()
+    conn.close()
+
+# Uygulama başlarken bir kez çağır:
+arsivle_gecmis_randevular()
